@@ -3,7 +3,6 @@ import { useState } from "react";
 interface InputBoxProps {
   history: string[];
   handle: (data: string[]) => void;
-  onKeyPress: Function;
 }
 
 export default function InputBox(props: InputBoxProps) {

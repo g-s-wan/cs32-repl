@@ -3,96 +3,34 @@ import "../styles/App.css";
 import Header from "./components/Header";
 import HistoryBox from "./components/HistoryBox";
 import InputBox from "./components/InputBox";
-import {
-  getFiveColumnCSV,
-  getOneColumnCSV,
-  getThreeColumnCSV,
-} from "../mockData/mockedJson.js";
 
 function App() {
   // The data state is an array of strings, which is passed to our components
   // You may want to make this a more complex object, but for now it's just a string
   const [history, setHistory] = useState<string[]>([]);
-
-  // This is temporary
-  useEffect(() => {
-    // prepareButtonPress();
-    // prepareEnterFeature();
-    prepareCSVList();
-  });
+  const [output, setOutput] = useState("");
+  const [mode, setMode] = useState("BRIEF");
 
   // Custom type that represents a command and its output
   type command = { [key: string]: Object };
-  let mode = "BRIEF";
   // List of commands shown in the repl-history
   let commandList = new Array();
   // Currently loaded CSV
-  let loadedCSV = new Array<Array<string>>();
-  // Stores mocked CSV data
-  const csvList = new Map<string, Array<Array<string>>>();
+  let [loadedCSV, setLoadedCSV] = useState("");
+
+  useEffect(() => {
+    console.log("EFFECT");
+  }, [output]);
+
+  // For last user story
+  let registeredCommands = new Map<string, string>();
 
   // Reset the page to its default
   function clearHistory() {
-    mode = "BRIEF";
+    setMode("BRIEF");
     commandList = [];
-    loadedCSV = new Array<Array<string>>();
+    loadedCSV = "";
   }
-
-  // Set up the mocked CSV data
-  // Note: the filenames do not represent actual file names
-  // function prepareCSVList() {
-  //   csvList.set("mockedData/csv1", getFiveColumnCSV());
-
-  //   csvList.set("mockedData/csv2", getThreeColumnCSV());
-
-  //   csvList.set("mockedData/csv3", getOneColumnCSV());
-  // }
-
-  // Allows the user to submit their input using the Enter key
-  function handleEnter(event: KeyboardEvent) {
-    // const inputs = document.getElementsByClassName("repl-command-box");
-    // const input = inputs.item(0);
-    // if (input == null) {
-    //   console.log("Couldn't find the button");
-    // } else if (!(input instanceof HTMLInputElement)) {
-    //   console.log("Found element, but wasn't button element");
-    // } else {
-    //   input.addEventListener("keydown", (e) => {
-    //     if (e.key == "Enter") {
-    //       handleCommand();
-    //     }
-    //   });
-    // }
-    if (event.key === "Enter") {
-      handleCommand();
-    }
-  }
-
-  // Allows the user to submit their input using the Submit button
-  function prepareButtonPress() {
-    // At this point, we're not sure whether the button actually exists
-    // const maybeButtons = document.getElementsByClassName("submit-button");
-    // const maybeButton = maybeButtons.item(0);
-    // if (maybeButton == null) {
-    //   console.log("Couldn't find the button");
-    // } else if (!(maybeButton instanceof HTMLButtonElement)) {
-    //   console.log("Found element, but wasn't button element");
-    // } else {
-    //   maybeButton.addEventListener("click", handleButtonPress);
-    // }
-  }
-
-  // If something went wrong with the button press, an error is logged
-  // Otherwise, the user's submission contines to be processed
-  // function handleButtonPress(event: MouseEvent) {
-  //   if (event === null) {
-  //     console.log("Button press was not registered");
-  //   } else if (commandList === null) {
-  //     console.log("Unable to process list of commands");
-  //   } else {
-  //     handleCommand();
-  //   }
-  // }
 
   // Handles what happens when the user inputs and submits something
   function handleCommand() {
@@ -112,43 +50,54 @@ function App() {
       const commandValue = newCommand.value;
       // Will be added to commandList once populated
       const commandObj: command = {};
-      let output = "";
-      console.log(commandValue);
       // User story #1
       if (commandValue === "mode") {
-        mode = mode === "BRIEF" ? "VERBOSE" : "BRIEF";
+        setMode(mode === "BRIEF" ? "VERBOSE" : "BRIEF");
         // Alert the user that the mode was changed
-        output = `Mode was changed to ${mode}`;
+        setOutput(`Mode was changed to ${mode}`);
 
         // User story #2
       } else if (commandValue.includes("load_file")) {
+          console.log("loading");
         const filePath = commandValue.split(" ")[1];
-        // Extract the CSV from the mocked data
-        const csvFile = csvList.get(`${filePath}`);
-        if (csvFile != undefined) {
-          // Update the currently loaded file and alert the user
-          loadedCSV = csvFile;
-          output = `Successfully loaded ${filePath}`;
-          // Filepath provided was not in the mocked data
-        } else {
-          replHistory.innerHTML += "<p>CSV file could not be found</p>";
-        }
+        fetch('http://localhost:3232/loadcsv?filepath=' + `${filePath}`)
+        .then(response => response.json())
+        .then(responseObject => {
+          if (responseObject.result.includes("error")) {
+            setOutput(`An error occurred while loading the file`);
+          } else {
+            setLoadedCSV(responseObject.filepath);
+            setOutput(`Successfully loaded ${filePath}`);
+          }
+        })
+        .catch((error) => {
+          console.log("ERROR ERROR " + error);
+        });
 
         // User story #3
       } else if (commandValue === "view") {
-        if (loadedCSV.length === 0) {
-          output = `<p>No CSV file has been loaded yet.</p>`;
+        console.log("viewing");
+        if (loadedCSV === null) {
+          setOutput(`<p>No CSV file has been loaded yet.</p>`);
         } else {
-          // Construct a table based on the values in the mocked data
-          output += "<table>";
-          loadedCSV.forEach((row) => {
-            output += "<tr>";
-            row.forEach((col) => {
-              output += `<td>${col}</td>`;
-            });
-            output += "</tr>";
+          fetch("http://localhost:3232/viewcsv")
+          .then(response => response.json())
+          .then(responseObject => {
+            // get responseObject['data'] and split the strings, displaying each one as a table cell
+            setOutput(`<p>${responseObject}</p>`);
           });
-          output += "</table>";
+          // const loadedCSVAsArray = loadedCSV.split(",");
+          // // Construct a table based on the values in the mocked data
+          // output += "<table>";
+          // loadedCSVAsArray.forEach((row) => {
+          //   const rowAsArray = row.split(",");
+          //   output += "<tr>";
+          //   rowAsArray.forEach((col) => {
+          //     output += `<td>${col}</td>`;
+          //   });
+          //   output += "</tr>";
+          // });
+          // output += "</table>";
         }
 
         // User story #4
@@ -180,9 +129,11 @@ function App() {
       //}
       // Invalid/unrecognized command
       else {
-        output = `<p>Could not recognize that command</p>`;
+        setOutput("<p>Could not recognize that command</p>");
+        console.log(output);
       }
 
+      console.log("HUH");
       updateHTML(commandValue, output, commandObj, replHistory);
     }
   }
@@ -225,7 +176,6 @@ function App() {
         <InputBox
           history={history}
           handle={handleCommand}
-          onKeyPress={handleEnter}
         />
       </div>
     </div>
