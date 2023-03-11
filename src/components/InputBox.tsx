@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { KeyboardEvent, useState } from "react";
 
 interface InputBoxProps {
   history: string[];
-  setHistory: (data: string[]) => void;
+  handle: (data: string[]) => void;
+  onKeyPress: Function;
 }
 
 export default function InputBox(props: InputBoxProps) {
-  // TODO: Add a state variable for the textbox contents
   const [text, setText] = useState("");
 
   /**
@@ -15,28 +15,26 @@ export default function InputBox(props: InputBoxProps) {
    * command logic, but for now it just adds the text to the history box.
    */
   function handleSubmit() {
-    // TODO: Add the text from the textbox to the history
-    // Hint: You can use the spread operator (...) to add to an array
-    // TODO: Clear the textbox
-    props.setHistory([...props.history, text]);
+    props.handle([...props.history, text]);
     setText("");
+  }
+
+  function handleEnter(event: KeyboardEvent) {
+    if (event.key === "Enter") {
+      props.handle([...props.history, text]);
+      setText("");
+    }
   }
 
   return (
     <div className="repl-input">
-      {/* TODO: Make this input box sync with the state variable */}
       <input
         type="text"
         onChange={(e) => setText(e.target.value)}
         value={text}
-        onKeyUp={(e) => {
-          if (e.key == "Enter") {
-            handleSubmit();
-          }
-        }}
+        onKeyUp={handleEnter}
         className="repl-command-box"
       />
-      {/* TODO: Make this button call handleSubmit when clicked */}
       <button className="repl-button" onClick={handleSubmit}>
         Submit
       </button>
