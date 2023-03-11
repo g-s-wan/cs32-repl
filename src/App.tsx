@@ -40,13 +40,13 @@ function App() {
 
   // Set up the mocked CSV data
   // Note: the filenames do not represent actual file names
-  function prepareCSVList() {
-    csvList.set("mockedData/csv1", getFiveColumnCSV());
+  // function prepareCSVList() {
+  //   csvList.set("mockedData/csv1", getFiveColumnCSV());
 
-    csvList.set("mockedData/csv2", getThreeColumnCSV());
+  //   csvList.set("mockedData/csv2", getThreeColumnCSV());
 
-    csvList.set("mockedData/csv3", getOneColumnCSV());
-  }
+  //   csvList.set("mockedData/csv3", getOneColumnCSV());
+  // }
 
   // Allows the user to submit their input using the Enter key
   function handleEnter(event: KeyboardEvent) {
