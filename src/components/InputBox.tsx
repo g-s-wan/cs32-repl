@@ -1,4 +1,4 @@
-import { KeyboardEvent, useState } from "react";
+import { useState } from "react";
 
 interface InputBoxProps {
   history: string[];
@@ -19,20 +19,17 @@ export default function InputBox(props: InputBoxProps) {
     setText("");
   }
 
-  function handleEnter(event: KeyboardEvent) {
-    if (event.key === "Enter") {
-      props.handle([...props.history, text]);
-      setText("");
-    }
-  }
-
   return (
     <div className="repl-input">
       <input
         type="text"
         onChange={(e) => setText(e.target.value)}
         value={text}
-        onKeyUp={handleEnter}
+        onKeyUp={(e) => {
+          if (e.key == "Enter") {
+            handleSubmit();
+          }
+        }}
         className="repl-command-box"
       />
       <button className="repl-button" onClick={handleSubmit}>

@@ -132,7 +132,6 @@ function App() {
           // Filepath provided was not in the mocked data
         } else {
           replHistory.innerHTML += "<p>CSV file could not be found</p>";
-          replHistory.innerHTML += `<p>${filePath}</p>`;
         }
 
         // User story #3
