@@ -9,8 +9,6 @@ function HistoryBox(props: HistoryBoxProps) {
       {history.map((item, index) => (
         <div key={index}>{item}</div>
       ))}
-      {/* TODO: Add a div for each command in the history */}
-      {/* Hint: You can use the map function to iterate over an array */}
     </div>
   );
 }
