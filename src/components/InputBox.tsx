@@ -1,8 +1,9 @@
 import { useState } from "react";
+import CSVTable from "./CSVTable";
 
 interface InputBoxProps {
-  history: string[];
-  handle: (data: string[]) => void;
+  history: (string|string[])[];
+  handle: (data: (string | string[])[]) => void;
   text: string;
   setText: Function;
 }

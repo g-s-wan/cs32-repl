@@ -3,15 +3,17 @@ import "../styles/App.css";
 import Header from "./components/Header";
 import HistoryBox from "./components/HistoryBox";
 import InputBox from "./components/InputBox";
+import CSVTable from "./components/CSVTable";
 
 function App() {
   // The data state is an array of strings, which is passed to our components
   // You may want to make this a more complex object, but for now it's just a string
-  const [history, setHistory] = useState<string[]>([]);
+  const [history, setHistory] = useState<(string|string[])[]>([]);
   const [mode, setMode] = useState("BRIEF");
   const [text, setText] = useState("");
   const [isBrief, setBrief] = useState(true);
-  let [loadedCSV, setLoadedCSV] = useState("");
+  const [loadedCSV, setLoadedCSV] = useState("");
+  const [csvTable, setCSVTable] = useState<string[]>([]);
 
   // Custom type that represents a command and its output
   type command = { [key: string]: Object };
@@ -35,7 +37,7 @@ function App() {
   function clearHistory() {
     setMode("BRIEF");
     commandList = [];
-    loadedCSV = "";
+    setLoadedCSV("");
   }
 
   /*
@@ -98,6 +100,7 @@ function App() {
   // User story #3
    else if (command_array[0] === "view") {
       console.log("viewing"); // todo - needed?
+      const toDisplay = "";
 
       if (loadedCSV === null) {
         setHistory([...history, "No CSV file has been loaded yet"]);
@@ -105,8 +108,15 @@ function App() {
         fetch("http://localhost:3232/viewcsv")
         .then(response => response.json())
         .then(responseObject => {
-          // get responseObject['data'] and split the strings, displaying each one as a table cell
-          setHistory([...history, responseObject]);
+          console.log("RESPONSE OBJECT");
+          console.log(responseObject);
+          const csvData: string[] = responseObject.data;
+
+          setCSVTable(csvData);
+          setHistory([...history, csvData]);
+          // csvData.forEach((row) => {
+          //   setHistory([...history, row]); // todo: find a better way to display this data
+          // })
         });
         // const loadedCSVAsArray = loadedCSV.split(",");
         // // Construct a table based on the values in the mocked data
@@ -160,39 +170,11 @@ function App() {
       }
     }
 
-
-
-  // function getMode() {
-  //   return mode;
-  // }
-  //
-  // function getLoadedCSV() {
-  //   return loadedCSV;
-  // }
-
-  // Updates the page to reflect the newly inputted command
-  function updateHTML(
-      commandValue: string,
-      output: string,
-      replHistory: Element
-  ) {
-    // Update the UI based on the mode
-    if (mode === "BRIEF") {
-      replHistory.innerHTML += `<p>${output}</p>`;
-    } else {
-      replHistory.innerHTML += `<p>Command: ${commandValue}</p>`;
-      replHistory.innerHTML += `<p>Output: ${output}</p>`;
-    }
-    // Add a horizontal line for visiblity between commands
-    replHistory.innerHTML += "<hr/>";
-  }
-
-
   return (
     <div>
       <Header />
       <div className="repl">
-        <HistoryBox history={history}/>
+        <HistoryBox history={history} csvTable={csvTable}/>
         <hr />
         <InputBox
           history={history}
