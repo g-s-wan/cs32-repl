@@ -13,7 +13,7 @@ function App() {
   const [text, setText] = useState("");
   const [isBrief, setBrief] = useState(true);
   const [loadedCSV, setLoadedCSV] = useState("");
-  const [csvTable, setCSVTable] = useState<string[]>([]);
+  // const [csvTable, setCSVTable] = useState<string[]>([]);
 
   // Custom type that represents a command and its output
   type command = { [key: string]: Object };
@@ -98,7 +98,7 @@ function App() {
     }
 
   // User story #3
-   else if (command_array[0] === "view") { // todo display in center
+   else if (command_array[0] === "view") {
       console.log("viewing"); // todo - needed?
       const toDisplay = "";
 
@@ -112,7 +112,6 @@ function App() {
           console.log(responseObject);
           const csvData: string[] = responseObject.data;
 
-          setCSVTable(csvData);
           setHistory([...history, csvData]);
           // csvData.forEach((row) => {
           //   setHistory([...history, row]); // todo: find a better way to display this data
@@ -134,34 +133,51 @@ function App() {
     }
         // User story #4
 
-      // else if (commandValue.includes("search")) {
-      //   let parsed = commandValue.split(" ");
-      //   if (parsed.length != 3) {
-      //     output += `<p>Wrong number of parameters.</p>`;
-      //     console.log("Wrong number of parameters.");
-      //   } else {
-      //     let column = parsed[1];
-      //     let value = parsed[2];
-      //     // call the back-end searching method using column and value.
-      //     // mock the back-end for this sprint
-      //     console.log("running");
-      //     let sd = new SearchData();
+      else if (command_array[0].includes("search")) {
+        if (command_array.length < 3) {
+          setHistory([...history, "Incorrect number of parameters"]);
+        } else {
+          let searchTerm = command_array[1];
+          let hasHeaders = command_array[2];
+          fetch(command_array.length === 4
+              ? "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}` + "&col=" + `${command_array[3]}`
+              : "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}`
+          )
+          .then(response => response.json())
+          .then(responseObject => {
+              if (responseObject.result.includes("error")) {
+                setHistory([...history, responseObject.message]);
+              } else {
+                let csvData: string[] = responseObject.data;
+                if (csvData.length === 0) {
+                  csvData = [`${mode_message}`, "Output: No results found"];
+                }
+                console.log("CSV DATA " + csvData);
+                setHistory([...history, csvData]);
+              }
+            })
+          }
+        }
+          // call the back-end searching method using column and value.
+          // mock the back-end for this sprint
+          // console.log("running");
+          // let sd = new SearchData();
 
-      //     replHistory.innerHTML += `<p>Searching Result:</p>`;
-      //     output += "<table>";
-      //     sd.searchResult(loadedCSV, column, value).forEach((row) => {
-      //       output += "<tr>";
-      //       row.forEach((col) => {
-      //         output += `<td>${col}</td>`;
-      //       });
-      //       output += "</tr>";
-      //     });
-      //     output += "</table>";
-      //   }
+        //   replHistory.innerHTML += `<p>Searching Result:</p>`;
+        //   output += "<table>";
+        //   sd.searchResult(loadedCSV, column, value).forEach((row) => {
+        //     output += "<tr>";
+        //     row.forEach((col) => {
+        //       output += `<td>${col}</td>`;
+        //     });
+        //     output += "</tr>";
+        //   });
+        //   output += "</table>";
+        // }
       //}
       // Invalid/unrecognized command
 
-      else if(command_array[0] === "help") {
+      else if (command_array[0] === "help") {
         setHistory([...history, "Available commands: mode,  load_file filename, view, search searchvalue " +
         "[index | column] [header]"]);
       }
@@ -174,7 +190,7 @@ function App() {
     <div>
       <Header />
       <div className="repl">
-        <HistoryBox history={history} csvTable={csvTable}/>
+        <HistoryBox history={history}/>
         <hr />
         <InputBox
           history={history}

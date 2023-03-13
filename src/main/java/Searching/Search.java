@@ -74,6 +74,10 @@ public class Search {
   public List<List<String>> searchCSV(String filePath, String searchValue, String hasHeaders, String col)
       throws IOException {
 
+//    if (!(hasHeaders.toLowerCase() == "y") && !(hasHeaders.toLowerCase() == "n") ) {
+//      throw new Exception();
+//    }
+
     BufferedReader reader = null;
     reader = new BufferedReader(new FileReader(filePath));
 

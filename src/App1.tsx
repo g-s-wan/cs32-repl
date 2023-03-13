@@ -111,84 +111,107 @@ function App1() {
       //   }
       //   commandResponse = searchDataset(csvDataset, searchColumn, searchText);
       // }
-      console.log("args is " + args);
-
-      const searchValue = args[1];
-      const searchIndexStr= args[2];
-      const searchColum= args[3];
-
-      // Ensure all arguments are valid
-      console.log("searchValue is " + searchValue);
-      console.log("searchIndexStr is " + searchIndexStr);
-      console.log("searchColum is " + searchColum);
-
-      //User gives both index & column
-      if (searchIndexStr !== undefined && searchColum !== undefined && searchColum !== "") {
-        setHistory([...history, `${mode_message}`, "Invalid Input : Usage is search searchValue [column_index | column_name] "])
+      // console.log("args is " + args);
+      //
+      // const searchValue = args[1];
+      // const searchIndexStr= args[2];
+      // const searchColum= args[3];
+      //
+      // // Ensure all arguments are valid
+      // console.log("searchValue is " + searchValue);
+      // console.log("searchIndexStr is " + searchIndexStr);
+      // console.log("searchColum is " + searchColum);
+      //
+      // //User gives both index & column
+      // if (searchIndexStr !== undefined && searchColum !== undefined && searchColum !== "") {
+      //   setHistory([...history, `${mode_message}`, "Invalid Input : Usage is search searchValue [column_index | column_name] "])
+      // }
+      //
+      // //User searches with index
+      // if (searchIndexStr !== undefined && searchIndexStr !== "") {
+      //   const searchIndexInt = parseInt(searchIndexStr) //todo check out of bounderies
+      //   if (isNaN(searchIndexInt) || searchIndexInt < 0) {
+      //     setHistory([...history, `${mode_message}`, "Invalid Input : Index needs to be a positive integer"])
+      //   } else {
+      //     fetch('http://localhost:3232/searchcsv?searchterm=' + `${searchValue}`
+      //         +"&col=" + `${searchIndexStr}`+"&hasheaders=" + `${isHeaderPresent}`)
+      //     .then(response => response.json())
+      //     .then(responseObject => {
+      //       console.log(responseObject);
+      //       const searchResult: string[] = responseObject.data;
+      //       console.log("searchResult is " + searchResult);
+      //       setCSVTable(searchResult);
+      //       setHistory([...history, searchResult]);
+      //     })
+      //     .catch((error) => {
+      //       setHistory([...history, `${mode_message}`, ` Output: Error ${error}`]);
+      //       console.log("ERROR ERROR " + error); // todo - Change message?
+      //     });
+      //   }
+      // }
+      //
+      // // User searches with column name
+      // else if (searchColum !== undefined && searchColum !== "") {
+      //   if (isHeaderPresent == false) {
+      //     setHistory([...history, `${mode_message}`, `Output: Error - Data does not have headers`]);
+      //   } else {
+      //     fetch('http://localhost:3232/searchcsv?searchterm=' + `${searchValue}`
+      //         +"&col=" + `${searchColum}`+"&hasheaders=" + `${isHeaderPresent}`)
+      //     .then(response => response.json())
+      //     .then(responseObject => {
+      //       console.log(responseObject);
+      //       const searchResult: string[] = responseObject.data;
+      //       setCSVTable(searchResult);
+      //       setHistory([...history, searchResult]);
+      //     })
+      //     .catch((error) => {
+      //       setHistory([...history, `${mode_message}`, ` Output: Error ${error}`]);
+      //       console.log("ERROR ERROR " + error); // todo - Change message?
+      //     });
+      //   }
+      // }
+      //
+      // // User searches value
+      // fetch('http://localhost:3232/searchcsv?searchterm=' + `${searchValue}`+ "&hasheaders=" + `${isHeaderPresent}`)
+      // .then(response => response.json())
+      // .then(responseObject => {
+      //   console.log(responseObject);
+      //   const searchResult: string[] = responseObject.data;
+      //   console.log("searchResult " + searchResult);
+      //   if (searchResult.length == 0) {
+      //     setHistory([...history, `${mode_message}`, "Output: No results found"]);
+      //   } else {
+      //     setCSVTable(searchResult);
+      //   }
+      //   //setHistory([...history, searchResult]);
+      // })
+      // .catch((error) => {
+      //   setHistory([...history, `${mode_message}`, ` Output: Error ${error}`]);
+      //   console.log("ERROR ERROR " + error); // todo - Change message?
+      // });
+      if (args.length < 3) {
+        setHistory([...history, "Incorrect number of parameters"]);
+      } else {
+        let searchTerm = args[1];
+        let hasHeaders = args[2];
+        fetch(args.length === 4
+            ? "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}` + "&col=" + `${args[3]}`
+            : "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}`
+        )
+        .then(response => response.json())
+        .then(responseObject => { // todo: duplicated code?
+          if (responseObject.result.includes("error")) {
+            setHistory([...history, responseObject.message]);
+          } else {
+            let csvData: string[] = responseObject.data;
+            if (csvData.length === 0) {
+              csvData = [`${mode_message}`, "Output: No results found"];
+            }
+            setHistory([...history, csvData]);
+          }
+        })
       }
 
-      //User searches with index
-      if (searchIndexStr !== undefined && searchIndexStr !== "") {
-        const searchIndexInt = parseInt(searchIndexStr) //todo check out of bounderies
-        if (isNaN(searchIndexInt) || searchIndexInt < 0) {
-          setHistory([...history, `${mode_message}`, "Invalid Input : Index needs to be a positive integer"])
-        } else {
-          fetch('http://localhost:3232/searchcsv?searchterm=' + `${searchValue}`
-              +"&col=" + `${searchIndexStr}`+"&hasheaders=" + `${isHeaderPresent}`)
-          .then(response => response.json())
-          .then(responseObject => {
-            console.log(responseObject);
-            const searchResult: string[] = responseObject.data;
-            console.log("searchResult is " + searchResult);
-            setCSVTable(searchResult);
-            setHistory([...history, searchResult]);
-          })
-          .catch((error) => {
-            setHistory([...history, `${mode_message}`, ` Output: Error ${error}`]);
-            console.log("ERROR ERROR " + error); // todo - Change message?
-          });
-        }
-      }
-
-      // User searches with column name
-      else if (searchColum !== undefined && searchColum !== "") {
-        if (isHeaderPresent == false) {
-          setHistory([...history, `${mode_message}`, `Output: Error - Data does not have headers`]);
-        } else {
-          fetch('http://localhost:3232/searchcsv?searchterm=' + `${searchValue}`
-              +"&col=" + `${searchColum}`+"&hasheaders=" + `${isHeaderPresent}`)
-          .then(response => response.json())
-          .then(responseObject => {
-            console.log(responseObject);
-            const searchResult: string[] = responseObject.data;
-            setCSVTable(searchResult);
-            setHistory([...history, searchResult]);
-          })
-          .catch((error) => {
-            setHistory([...history, `${mode_message}`, ` Output: Error ${error}`]);
-            console.log("ERROR ERROR " + error); // todo - Change message?
-          });
-        }
-      }
-
-      // User searches value
-      fetch('http://localhost:3232/searchcsv?searchterm=' + `${searchValue}`+ "&hasheaders=" + `${isHeaderPresent}`)
-      .then(response => response.json())
-      .then(responseObject => {
-        console.log(responseObject);
-        const searchResult: string[] = responseObject.data;
-        console.log("searchResult " + searchResult);
-        if (searchResult.length == 0) {
-          setHistory([...history, `${mode_message}`, "Output: No results found"]);
-        } else {
-          setCSVTable(searchResult);
-        }
-        //setHistory([...history, searchResult]);
-      })
-      .catch((error) => {
-        setHistory([...history, `${mode_message}`, ` Output: Error ${error}`]);
-        console.log("ERROR ERROR " + error); // todo - Change message?
-      });
     },
   }
 
@@ -229,7 +252,7 @@ function App1() {
       <div>
         <Header />
         <div className="repl">
-          <HistoryBox history={history} csvTable={csvTable}/>
+          <HistoryBox history={history}/>
           <hr />
           <InputBox
               history={history}

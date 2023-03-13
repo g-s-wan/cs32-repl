@@ -2,7 +2,6 @@ import CSVTable from "./CSVTable";
 
 interface HistoryBoxProps {
   history: (string|string[])[];
-  csvTable: string[];
 }
 
 function HistoryBox(props: HistoryBoxProps) {
@@ -15,7 +14,7 @@ function HistoryBox(props: HistoryBoxProps) {
       // <CSVTable csvTable={props.csvTable} />
     <div className="repl-history">
       {history.map((item, index) => (
-          typeof item === "string" ? <div key={index}>{item}</div> : <CSVTable csvTable={props.csvTable} />
+          typeof item === "string" ? <div key={index}>{item}</div> : <CSVTable csvTable={item} />
       ))}
     </div>
   );

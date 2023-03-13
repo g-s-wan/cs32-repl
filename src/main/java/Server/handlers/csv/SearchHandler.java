@@ -77,6 +77,12 @@ public class SearchHandler implements Route {
             return new SearchResponse(jsonMap).serialize();
         }
 
+        if (!(hasHeaders.toLowerCase().equals("y")) && !(hasHeaders.toLowerCase().equals("n"))) {
+            jsonMap.put("result", "error_bad_request");
+            jsonMap.put("message", "The hasheaders parameter must be either 'y' or 'n'");
+            return new SearchResponse(jsonMap).serialize();
+        }
+
         Search searcher = new Search();
 
         try {

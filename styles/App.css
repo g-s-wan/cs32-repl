@@ -24,5 +24,9 @@
   width: 90%;
   margin: auto;
   display: flex;
+}
 
+.repl-center {
+  display: flex;
+  justify-content: center;
 }
