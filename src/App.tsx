@@ -65,7 +65,7 @@ function App() {
 
       } else {
         mode_message = "Command: " + command_array[0]
-        setHistory([...history, `${mode_message} Output: Mode successfully set to VERBOSE`]);
+        setHistory([...history, `${mode_message}`, `Output: Mode successfully set to BRIEF`]);
         setMode("BRIEF");
       }
     }
@@ -98,7 +98,7 @@ function App() {
     }
 
   // User story #3
-   else if (command_array[0] === "view") {
+   else if (command_array[0] === "view") { // todo display in center
       console.log("viewing"); // todo - needed?
       const toDisplay = "";
 

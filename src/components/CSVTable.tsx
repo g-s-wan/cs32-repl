@@ -1,4 +1,5 @@
 interface CSVTableProps {
+
   csvTable: string[];
 }
 
@@ -7,11 +8,11 @@ function CSVTable(props: CSVTableProps) {
 
   return (
       <table>
-        <tbody>
+        <thead>
         {Object.values(csvTable).map((row) => (
             <tr>{row.toString()}</tr>
         ))}
-        </tbody>
+        </thead>
       </table>
   );
 }

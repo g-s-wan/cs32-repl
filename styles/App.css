@@ -23,5 +23,6 @@
 .repl-command-box {
   width: 90%;
   margin: auto;
-  display: block;
+  display: flex;
+
 }
