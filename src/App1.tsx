@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useCallback, useRef} from "react";
 import "../styles/App.css";
 import Header from "./components/Header";
 import HistoryBox from "./components/HistoryBox";
@@ -13,11 +13,28 @@ function App1() {
   const [history, setHistory] = useState<(string | string[])[]>([]);
   const [mode, setMode] = useState("BRIEF");
   const [text, setText] = useState("");
-  const [isBrief, setBrief] = useState(true);
   const [loadedCSV, setLoadedCSV] = useState("");
-  const [csvTable, setCSVTable] = useState<string[]>([]);
   let mode_message = "";
   let isHeaderPresent = false;
+  // todo: shortcuts are buggy
+
+  const handleShortcut = useCallback((event: KeyboardEvent) => {
+    const key = event.key.toLowerCase();
+    if ((event.ctrlKey || event.metaKey) && key === 'v') {
+      commands['viewCommand']([], mode_message);
+    } else if ((event.ctrlKey || event.metaKey) && key === 'm') {
+      commands['modeCommand']([], mode_message);
+    } else if ((event.ctrlKey || event.metaKey) && key === 'h') {
+      commands['helpCommand']([], mode_message);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleShortcut);
+    return () => {
+      document.removeEventListener('keydown', handleShortcut);
+    };
+  }, []);
 
   // let baselineCommands = new Map();
   // baselineCommands.set("mode",modeCommand);
@@ -41,7 +58,7 @@ function App1() {
       // } else { //toggle between brief/verbose
         if (mode === "BRIEF") {
           setMode("VERBOSE"); //toggle between brief/verbose
-          setHistory([...history, `${mode_message} Output: Mode successfully set to VERBOSE`]);
+          setHistory([...history, `${mode_message}`, `Output: Mode successfully set to VERBOSE`]);
         } else {
           setMode("BRIEF");
           setHistory([...history, `${mode_message}`, `Output: Mode successfully set to BRIEF`]);
@@ -56,15 +73,16 @@ function App1() {
       }
       else {
         const filePath = args[1];
-        if (args[2] == "-h") {isHeaderPresent = true}
+        // if (args[2] == "-h") {isHeaderPresent = true}
 
         fetch('http://localhost:3232/loadcsv?filepath=' + `${filePath}`)
         .then(response => response.json())
         .then(responseObject => {
           if (responseObject.result.includes("error")) {
-            setHistory([...history,`${mode_message}`, `An error occurred while loading the file`]);
+            // todo: be more specific?
+            setHistory([...history,`${mode_message}`, responseObject.message]);
           } else {
-            setLoadedCSV(responseObject.filepath);
+            setLoadedCSV(filePath);
             setHistory([...history,`${mode_message}`, `Output: Successfully loaded ${filePath}`]);
           }
         })
@@ -78,17 +96,18 @@ function App1() {
     viewCommand(args: string[], mode_message: string) {
       console.log("viewing");
 
-      if (loadedCSV === null) {
+      if (loadedCSV === "") {
         setHistory([...history, "No CSV file has been loaded yet"]);
       } else {
         fetch("http://localhost:3232/viewcsv")
         .then(response => response.json())
         .then(responseObject => {
-          const csvData: string[] = responseObject.data;
-
-          setCSVTable(csvData);
-          setHistory([...history, csvData]);
-
+          if (responseObject.result.includes("error")) {
+            setHistory([...history,`${mode_message}`, responseObject.message]);
+          } else {
+            const csvData: string[] = responseObject.data;
+            setHistory([...history, csvData]);
+          }
         });
       }
     },
@@ -201,18 +220,23 @@ function App1() {
         .then(response => response.json())
         .then(responseObject => { // todo: duplicated code?
           if (responseObject.result.includes("error")) {
-            setHistory([...history, responseObject.message]);
+            setHistory([...history, `${mode_message}`, responseObject.message]);
           } else {
             let csvData: string[] = responseObject.data;
             if (csvData.length === 0) {
               csvData = [`${mode_message}`, "Output: No results found"];
             }
-            setHistory([...history, csvData]);
+            setHistory([...history, `${mode_message}`, csvData]);
           }
         })
       }
 
     },
+
+    helpCommand(args: string[], mode_message: string) {
+      setHistory([...history, "Available commands: mode,  load_file filename, view, search searchvalue " +
+      "[index | column] [header]"]);
+    }
   }
 
   function handleCommand() {
@@ -245,8 +269,6 @@ function App1() {
     }
 
   }
-
-
 
   return (
       <div>

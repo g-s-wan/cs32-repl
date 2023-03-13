@@ -2,6 +2,8 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Header from "../src/components/Header";
+import React, {useState} from "react";
+import HistoryBox from "../src/components/HistoryBox";
 
 /*
  * This is an example test file.
@@ -9,9 +11,11 @@ import Header from "../src/components/Header";
  * Feel free to research all the other functions that Jest and Testing Library provide!
  */
 
-describe("stencil code example", () => {
-  test("basic math", () => {
-    expect(1 + 1).toBe(2);
+const [history, setHistory] = useState([]);
+describe("core elements render", () => {
+  test("loads and displays repl history", () => {
+    render(<HistoryBox history={history} />);
+    // expect...
   });
 
   test("loads and displays header", async () => {

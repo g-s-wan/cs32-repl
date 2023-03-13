@@ -8,7 +8,7 @@ function CSVTable(props: CSVTableProps) {
 
   return (
       <div className="repl-center">
-        <table>
+        <table aria-label="table">
           <thead>
           {Object.values(csvTable).map((row) => (
               <tr>{row.toString()}</tr>

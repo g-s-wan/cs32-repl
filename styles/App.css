@@ -6,24 +6,29 @@
 
 .repl {
   position: relative;
+  margin: auto;
 }
 
 .repl-history {
-  height: 70vh;
+  height: 60vh;
   margin: auto;
   display: block;
   overflow: scroll;
 }
 
 .repl-input {
-  margin: auto;
+  position: sticky;
+  bottom: 0;
+  margin: 5vh auto;
+  width: 80vw;
   height: 10vh;
 }
 
 .repl-command-box {
-  width: 90%;
+  width: 100%;
   margin: auto;
   display: flex;
+  left: 50%;
 }
 
 .repl-center {

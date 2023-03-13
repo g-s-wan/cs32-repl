@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {MutableRefObject, useState} from "react";
 import CSVTable from "./CSVTable";
 
 interface InputBoxProps {
@@ -34,7 +34,7 @@ export default function InputBox(props: InputBoxProps) {
         className="repl-command-box"
       />
       <button className="repl-button" onClick={handleSubmit}>
-        Submit
+      Submit
       </button>
     </div>
   );

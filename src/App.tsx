@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import "../styles/App.css";
 import Header from "./components/Header";
 import HistoryBox from "./components/HistoryBox";
@@ -26,10 +26,18 @@ function App() {
   // For last user story
   let registeredCommands = new Map<string, string>();
 
-  // useEffect(() => {
-  //   console.log("EFFECT");
-  //   setHistory([...history, output]);
-  // }, [output]);
+  const handleShortcut = useCallback((event: KeyboardEvent) => {
+    if (event.key === "v") {
+
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleShortcut);
+    return () => {
+      document.removeEventListener('keydown', handleShortcut);
+    };
+  }, [handleShortcut]);
 
   /*
   Reset the page to its default: mode brief & empty command list & no loaded CSV
