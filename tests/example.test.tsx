@@ -14,6 +14,14 @@ import "../styles/App.css";
  * Feel free to research all the other functions that Jest and Testing Library provide!
  */
 
+// beforeEach(() => {
+//   jest.spyOn(window, "fetch").mockImplementation(mockFetch);
+// })
+//
+// afterEach(() => {
+//   jest.restoreAllMocks()
+// });
+
 describe("core elements render", () => {
   test("loads and displays header", async () => {
     render(<Header />);

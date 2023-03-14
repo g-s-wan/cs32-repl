@@ -43,15 +43,21 @@ function App1() {
   let commands : Commands = {
 
     modeCommand(args: string[], mode_message: string) {
+      console.log("1");
       // todo User specifies mode
       // if (args[1] !== undefined) {
       //   setMode(args[1]);
       // } else { //toggle between brief/verbose
         if (mode === "BRIEF") {
+          console.log("2");
           setMode("VERBOSE"); //toggle between brief/verbose
+          console.log("4");
           setHistory([...history, `${mode_message}`, `Output: Mode successfully set to VERBOSE`]);
+          console.log("6");
         } else {
+          console.log("3");
           setMode("BRIEF");
+          console.log("5");
           setHistory([...history, `${mode_message}`, `Output: Mode successfully set to BRIEF`]);
         }
       //}
@@ -260,16 +266,19 @@ function App1() {
 
   }
 
-  const handleShortcut = useCallback((event: KeyboardEvent) => {
+  const handleShortcut = /*useCallback(*/(event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
-    if ((event.ctrlKey || event.metaKey) && event.altKey && key === 'v') {
+    if ((event.ctrlKey || event.metaKey) && event.shiftKey && key === 'v') {
       commands['viewCommand'](["view"], mode_message);
-    } else if ((event.ctrlKey || event.metaKey) && event.altKey && key === 'm') {
-      commands['modeCommand'](["mode"], mode_message);
-    } else if ((event.ctrlKey || event.metaKey) && event.altKey && key === 'h') {
+    } else if ((event.ctrlKey || event.metaKey) && event.shiftKey && key === 'm') {
+      console.log("IN M SHORTCUT");
+      let action = commands["modeCommand"];
+      action(["modeCommand"], mode_message);
+      // commands['modeCommand'](["mode"], mode_message);
+    } else if ((event.ctrlKey || event.metaKey) && event.shiftKey && key === 'h') {
       commands['helpCommand'](["help"], mode_message);
     }
-  }, []);
+  }//, [history, mode]);
 
   useEffect(() => {
     executeScroll();
