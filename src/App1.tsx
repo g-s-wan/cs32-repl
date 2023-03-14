@@ -15,27 +15,10 @@ function App1() {
   const [mode, setMode] = useState("BRIEF");
   const [text, setText] = useState("");
   const [loadedCSV, setLoadedCSV] = useState("");
+  const scrollRef = useRef<null | HTMLDivElement>(null);
   let mode_message = "";
   let isHeaderPresent = false;
   // todo: shortcuts are buggy
-
-  const handleShortcut = useCallback((event: KeyboardEvent) => {
-    const key = event.key.toLowerCase();
-    if ((event.ctrlKey || event.metaKey) && key === 'v') {
-      commands['viewCommand']([], mode_message);
-    } else if ((event.ctrlKey || event.metaKey) && key === 'm') {
-      commands['modeCommand']([], mode_message);
-    } else if ((event.ctrlKey || event.metaKey) && key === 'h') {
-      commands['helpCommand']([], mode_message);
-    }
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleShortcut);
-    return () => {
-      document.removeEventListener('keydown', handleShortcut);
-    };
-  }, []);
 
   // let baselineCommands = new Map();
   // baselineCommands.set("mode",modeCommand);
@@ -45,6 +28,13 @@ function App1() {
   // baselineCommands.set("search", searchCommand);
 
   //let [registry, seRegistery]  = useState(baselineCommands);
+
+  const executeScroll = () => {
+    if (scrollRef && scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      // scrollRef.current?.scroll({ top: scrollRef.current?.scrollHeight, behavior: 'smooth' })
+    }
+  }
 
   type Commands = {
     [key: string]: (args: string[], mode_message: string) => void;
@@ -235,8 +225,8 @@ function App1() {
     },
 
     helpCommand(args: string[], mode_message: string) {
-      setHistory([...history, "Available commands: mode,  load_file filename, view, search searchvalue " +
-      "[index | column] [header]"]);
+      setHistory([...history, "Available commands: mode,  load_file filename, view, search [searchValue] " +
+      "[hasHeaders] [index | column]"]);
     }
   }
 
@@ -271,11 +261,33 @@ function App1() {
 
   }
 
+  const handleShortcut = useCallback((event: KeyboardEvent) => {
+    const key = event.key.toLowerCase();
+    if ((event.ctrlKey || event.metaKey) && event.altKey && key === 'v') {
+      commands['viewCommand'](["view"], mode_message);
+    } else if ((event.ctrlKey || event.metaKey) && event.altKey && key === 'm') {
+      commands['modeCommand'](["mode"], mode_message);
+    } else if ((event.ctrlKey || event.metaKey) && event.altKey && key === 'h') {
+      commands['helpCommand'](["help"], mode_message);
+    }
+  }, []);
+
+  useEffect(() => {
+    executeScroll();
+  }, [history]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleShortcut);
+    return () => {
+      document.removeEventListener('keydown', handleShortcut);
+    };
+  }, []);
+
   return (
       <div>
         <Header />
         <div className="repl">
-          <HistoryBox history={history}/>
+          <HistoryBox history={history} scrollRef={scrollRef}/>
           <hr />
           <InputBox
               history={history}

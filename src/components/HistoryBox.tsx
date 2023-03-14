@@ -1,7 +1,9 @@
 import CSVTable from "./CSVTable";
+import {EffectCallback, forwardRef, LegacyRef, useEffect} from "react";
 
 interface HistoryBoxProps {
   history: (string|string[])[];
+  scrollRef: LegacyRef<HTMLDivElement>;
 }
 
 function HistoryBox(props: HistoryBoxProps) {
@@ -12,9 +14,9 @@ function HistoryBox(props: HistoryBoxProps) {
   // })
   return (
       // <CSVTable csvTable={props.csvTable} />
-    <div className="repl-history">
+    <div className="repl-history" ref={props.scrollRef}>
       {history.map((item, index) => (
-          typeof item === "string" ? <div key={index}>{item}</div> : <CSVTable csvTable={item} />
+          typeof item === "string" ? <div key={index}>{item}<hr/></div> : <div><CSVTable csvTable={item} /><hr/></div>
       ))}
     </div>
   );

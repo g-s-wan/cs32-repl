@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import Header from "../src/components/Header";
 import React, {useState} from "react";
 import HistoryBox from "../src/components/HistoryBox";
+import InputBox from "../src/components/InputBox";
 
 /*
  * This is an example test file.
@@ -13,8 +14,8 @@ import HistoryBox from "../src/components/HistoryBox";
 
 const [history, setHistory] = useState([]);
 describe("core elements render", () => {
-  test("loads and displays repl history", () => {
-    render(<HistoryBox history={history} />);
+  test("loads and displays input elements", () => {
+    render(<InputBox />);
     // expect...
   });
 
