@@ -1,7 +1,8 @@
+import { useRef} from 'react';
 import CSVTable from "./CSVTable";
-import { useEffect, useRef} from 'react';
 
 import { history } from "../REPL/History";
+
 interface HistoryBoxProps {
   history : History;
 }
@@ -18,18 +19,12 @@ const AlwaysScrollToBottom = () => {
 
 /**
  * Component that displays the History
- * @param props 
- * @returns 
  */
 function HistoryBox(props: HistoryBoxProps) {
 
-//  const history = props.history;
-
   const alternatingColor = ['#d5d5d5', '#a9a9a9'];
 
-
   return (
-      // <CSVTable csvTable={props.csvTable} />
     <div className="repl-history">
       {history.entries.map((item, index) => (
            (item.type == "string")? 

@@ -1,5 +1,4 @@
 import { REPLFunction } from "./REPLFunction";
-export let csvData: string[];
 import { history } from "./History";
 
 /**
@@ -21,7 +20,7 @@ export const viewPromise :  REPLFunction = args => {
                 } else {
 
                 history.addTable(responseObject.data);
-                // setCSVTable(csvData);
+
                 resolve("Viewing CSV data");
             }})
             .catch((error) => {
