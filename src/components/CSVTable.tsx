@@ -8,10 +8,13 @@ function CSVTable(props: CSVTableProps) {
 
   return (
       <div className="repl-center">
-        <table aria-label="table">
+        <table>
           <thead>
           {Object.values(csvTable).map((row) => (
-              <tr>{row.toString()}</tr>
+              <tr>{row.toString().split(",").map((word) => (
+                  <td className="table-cell">{word}</td>
+              ))
+              }</tr>
           ))}
           </thead>
         </table>
