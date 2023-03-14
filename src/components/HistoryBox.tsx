@@ -6,8 +6,6 @@ interface HistoryBoxProps {
   history : History;
 }
 
-import {additionalData} from "../REPL/AdditionalData";
-
 /**
  * Solution that scrolls the History box when new items are added (this ensure that the last elements are 
  * always visible).
@@ -18,17 +16,11 @@ const AlwaysScrollToBottom = () => {
   return <div ref={elementRef} />;
 };
 
-const entryIsTable = (entry: any) : boolean => {
-
-  try {
-    const element00 = entry[0][0];
-    console.log("element 00 = " + element00)
-    return true;
-  } catch {
-    return false;
-  }
-}
-
+/**
+ * Component that displays the History
+ * @param props 
+ * @returns 
+ */
 function HistoryBox(props: HistoryBoxProps) {
 
 //  const history = props.history;
