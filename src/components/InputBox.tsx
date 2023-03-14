@@ -32,6 +32,8 @@ export default function InputBox(props: InputBoxProps) {
           }
         }}
         className="repl-command-box"
+        role="input"
+        aria-labelledby="input-box-id"
       />
       <button className="repl-button" onClick={handleSubmit}>
       Submit

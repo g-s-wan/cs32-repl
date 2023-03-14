@@ -282,6 +282,7 @@ function App1() {
     };
   }, []);
 
+  // todo: are we allowed to use the any type?
   function registerCommand(cmd : string , commandFunction: any) {
     cmd = cmd+"Command";
     commands[cmd] = commandFunction;

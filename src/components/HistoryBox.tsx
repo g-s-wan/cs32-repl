@@ -16,7 +16,7 @@ function HistoryBox(props: HistoryBoxProps) {
       // <CSVTable csvTable={props.csvTable} />
     <div className="repl-history" ref={props.scrollRef}>
       {history.map((item, index) => (
-          typeof item === "string" ? <div key={index}>{item}<hr/></div> : <div><CSVTable csvTable={item} /><hr/></div>
+          typeof item === "string" ? <div key={index}>{item}<hr/></div> : <div><CSVTable csvTable={item}/><hr/></div>
       ))}
     </div>
   );
