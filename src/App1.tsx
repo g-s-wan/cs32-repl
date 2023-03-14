@@ -232,6 +232,7 @@ function App1() {
 
   function handleCommand() {
     let command_array = text.split(" "); // get command in form of array
+    registerCommand("hug", printHugMe)
 
     // get first word in command
     let actionCommand = command_array[0] ;
@@ -240,16 +241,14 @@ function App1() {
     console.log("actionCommand is "+ actionCommand);
 
     try {
+      // Prepares message depending on mode selected
       if (mode === "BRIEF") {
         mode_message = ""
       } else {
         mode_message = `Command: ${command_array[0]}`
       }
-
-      //command_array.push(mode_message);
-
+      // Calls adequate command
       let action = commands[actionCommand];
-      //let action = commands.load_fileCommand;
       action(command_array, mode_message);
 
       //commands[commandName]();
@@ -282,6 +281,15 @@ function App1() {
       document.removeEventListener('keydown', handleShortcut);
     };
   }, []);
+
+  function registerCommand(cmd : string , commandFunction: any) {
+    cmd = cmd+"Command";
+    commands[cmd] = commandFunction;
+  }
+
+  function printHugMe(){
+    console.log("Hugging you very tight")
+  }
 
   return (
       <div>
