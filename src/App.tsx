@@ -1,191 +1,80 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../styles/App.css";
 import Header from "./components/Header";
 import HistoryBox from "./components/HistoryBox";
 import InputBox from "./components/InputBox";
-import CSVTable from "./components/CSVTable";
+
+import {REPL} from "./REPL/REPL"
+import {modePromise, modeBrief} from "./REPL/modePromise"
+import {loadPromise} from "./REPL/loadPromise"
+import {searchPromise} from "./REPL/searchPromise"
+import {viewPromise} from "./REPL/viewPromise"
+import { history } from "./REPL/History";
 
 function App() {
-  // The data state is an array of strings, which is passed to our components
-  // You may want to make this a more complex object, but for now it's just a string
-  const [history, setHistory] = useState<(string|string[])[]>([]);
-  const [mode, setMode] = useState("BRIEF");
+
+//  const [history, setHistory] = useState<(string | string[])[]>([]);
   const [text, setText] = useState("");
-  const [isBrief, setBrief] = useState(true);
-  const [loadedCSV, setLoadedCSV] = useState("");
-  // const [csvTable, setCSVTable] = useState<string[]>([]);
+  const [fullCommand, setFullCommand] = useState("");
+  const [outputStatus, setOutputStatus] = useState("");
+  const [histEntry, setHistEntry] = useState("");
+  
+ // const [loadedCSV, setLoadedCSV] = useState("");
+ // const [csvTable, setCSVTable] = useState<string[]>([]);
 
-  // Custom type that represents a command and its output
-  type command = { [key: string]: Object };
+  const repl = new REPL();
+  repl.registerCommand("mode", modePromise);
+  repl.registerCommand("load_file", loadPromise);
+  repl.registerCommand("view", viewPromise);
+  repl.registerCommand("search", searchPromise);
 
-  // List of commands shown in the repl-history todo use?
-  let commandList = new Array();
 
-  // Currently loaded CSV
+  useEffect(() => {
+    // Do not add anything to the History if the histEntry string changed because it was cleared.
+    //
+    if (histEntry.length > 0) {
 
-  // For last user story
-  let registeredCommands = new Map<string, string>();
+      if (!modeBrief) {
+        history.addString("Command " + fullCommand);
+        history.addString(outputStatus + histEntry);
+      } else {
+         history.addString(histEntry);
+      }
+    }
 
-  // useEffect(() => {
-  //   console.log("EFFECT");
-  //   setHistory([...history, output]);
-  // }, [output]);
+    // Clear the histEntry text so that we can add the same message to the history
+    // in case the user issues the same command again and gets the same histEntry.
+    //
+    setHistEntry("");
 
-  /*
-  Reset the page to its default: mode brief & empty command list & no loaded CSV
-   */
-  function clearHistory() {
-    setMode("BRIEF");
-    commandList = [];
-    setLoadedCSV("");
-  }
+  }, [histEntry]);
 
-  /*
-  Handles what happens when the user inputs and submits something
+  /**
+   * 
    */
   function handleCommand() {
-    let command_array = text.split(" ");
-    let mode_message = "";
-    let error_message;
 
-    /*if (isBrief === false) {
-        console.log("HERE");
-        setHistory([...history, `${verbose_message} \n Command: ${text_lowercase}`]);
-        console.log("HEREEEE");
-      }*/
+    // Store the full command (user input) since it gets cleared somewhere else.
+    setFullCommand(text.trim());
 
-    console.log("text_lowercase : " + command_array)
-    // User story #1
+    // Do nothing if the user did not provide a command
+    if (text.trim().length == 0)
+      return;
 
-    if (command_array[0].toLowerCase() === "mode") {
-      if (mode === "BRIEF") {
-        setMode("VERBOSE"); //toggle between brief/verbose
-        mode_message = ""
-        setHistory([...history, `${mode_message} Output: Mode successfully set to VERBOSE`]);
+    try {
+      repl.executeCommand(text.trim())
+        .then ( (response) => { setHistEntry(response);            setOutputStatus("Output: ");})
+        .catch( (err)      => { setHistEntry(err.toString());      setOutputStatus("Output (Error):  "); })
 
-      } else {
-        mode_message = "Command: " + command_array[0]
-        setHistory([...history, `${mode_message}`, `Output: Mode successfully set to BRIEF`]);
-        setMode("BRIEF");
-      }
+    } catch(error) {
+      setHistEntry(`Error executing command: ${error}`);
+      setOutputStatus("Output (Error): ");
     }
+  }
 
-    // User story #2
-
-    else if (command_array[0].toLowerCase() === "load_file") {
-
-      if (command_array[1] === undefined) {
-         setHistory([...history, "Error: Please enter filepath"]);
-      }
-      else {
-        const filePath = command_array[1];
-        console.log("filePath is " + filePath);
-
-        fetch('http://localhost:3232/loadcsv?filepath=' + `${filePath}`)
-        .then(response => response.json())
-        .then(responseObject => {
-          if (responseObject.result.includes("error")) {
-            setHistory([...history, `An error occurred while loading the file`]);
-          } else {
-            setLoadedCSV(responseObject.filepath);
-            setHistory([...history, `${mode_message} Output: Successfully loaded ${filePath}`]);
-          }
-        })
-        .catch((error) => {
-          console.log("ERROR ERROR " + error); // todo - Change message?
-        });
-     }
-    }
-
-  // User story #3
-   else if (command_array[0] === "view") {
-      console.log("viewing"); // todo - needed?
-      const toDisplay = "";
-
-      if (loadedCSV === null) {
-        setHistory([...history, "No CSV file has been loaded yet"]);
-      } else {
-        fetch("http://localhost:3232/viewcsv")
-        .then(response => response.json())
-        .then(responseObject => {
-          console.log("RESPONSE OBJECT");
-          console.log(responseObject);
-          const csvData: string[] = responseObject.data;
-
-          setHistory([...history, csvData]);
-          // csvData.forEach((row) => {
-          //   setHistory([...history, row]); // todo: find a better way to display this data
-          // })
-        });
-        // const loadedCSVAsArray = loadedCSV.split(",");
-        // // Construct a table based on the values in the mocked data
-        // output += "<table>";
-        // loadedCSVAsArray.forEach((row) => {
-        //   const rowAsArray = row.split(",");
-        //   output += "<tr>";
-        //   rowAsArray.forEach((col) => {
-        //     output += `<td>${col}</td>`;
-        //   });
-        //   output += "</tr>";
-        // });
-        // output += "</table>";
-      }
-    }
-        // User story #4
-
-      else if (command_array[0].includes("search")) {
-        if (command_array.length < 3) {
-          setHistory([...history, "Incorrect number of parameters"]);
-        } else {
-          let searchTerm = command_array[1];
-          let hasHeaders = command_array[2];
-          fetch(command_array.length === 4
-              ? "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}` + "&col=" + `${command_array[3]}`
-              : "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}`
-          )
-          .then(response => response.json())
-          .then(responseObject => {
-              if (responseObject.result.includes("error")) {
-                setHistory([...history, responseObject.message]);
-              } else {
-                let csvData: string[] = responseObject.data;
-                if (csvData.length === 0) {
-                  csvData = [`${mode_message}`, "Output: No results found"];
-                }
-                console.log("CSV DATA " + csvData);
-                setHistory([...history, csvData]);
-              }
-            })
-          }
-        }
-          // call the back-end searching method using column and value.
-          // mock the back-end for this sprint
-          // console.log("running");
-          // let sd = new SearchData();
-
-        //   replHistory.innerHTML += `<p>Searching Result:</p>`;
-        //   output += "<table>";
-        //   sd.searchResult(loadedCSV, column, value).forEach((row) => {
-        //     output += "<tr>";
-        //     row.forEach((col) => {
-        //       output += `<td>${col}</td>`;
-        //     });
-        //     output += "</tr>";
-        //   });
-        //   output += "</table>";
-        // }
-      //}
-      // Invalid/unrecognized command
-
-      else if (command_array[0] === "help") {
-        setHistory([...history, "Available commands: mode,  load_file filename, view, search searchvalue " +
-        "[index | column] [header]"]);
-      }
-      else {
-        setHistory([...history, `Could not recognize command "${command_array[0]}". Type help for list of commands`]);
-      }
-    }
-
+  /**
+   * TSX for the component
+   */
   return (
     <div>
       <Header />
@@ -193,14 +82,13 @@ function App() {
         <HistoryBox history={history}/>
         <hr />
         <InputBox
-          history={history}
-          handle={handleCommand}
-          text={text}
-          setText={setText}
+            handle={handleCommand}
+            text={text}
+            setText={setText}
         />
       </div>
     </div>
-  );
-}
+);
 
+}
 export default App;

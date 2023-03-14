@@ -6,8 +6,6 @@ import Server.handlers.csv.LoadHandler;
 import Server.handlers.csv.SearchHandler;
 import Server.handlers.csv.State;
 import Server.handlers.csv.ViewHandler;
-import Server.handlers.weather.WeatherHandle;
-import Server.handlers.weather.WeatherUtils;
 import spark.Spark;
 
 /**
@@ -27,8 +25,6 @@ public class Server {
         Spark.get("loadcsv", new LoadHandler(state));
         Spark.get("viewcsv", new ViewHandler(state));
         Spark.get("searchcsv", new SearchHandler(state));
-        WeatherUtils weatherUtils = new WeatherUtils();
-        Spark.get("weather", new WeatherHandle(weatherUtils));
         Spark.init();
         Spark.awaitInitialization();
         System.out.println("Server started in port " + portNum);

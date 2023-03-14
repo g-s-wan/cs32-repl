@@ -6,27 +6,52 @@
 
 .repl {
   position: relative;
+  margin: auto;
 }
 
 .repl-history {
-  height: 70vh;
+  height: 60vh;
   margin: auto;
   display: block;
   overflow: scroll;
 }
 
 .repl-input {
-  margin: auto;
+  position: sticky;
+  bottom: 0;
+  margin: 5vh auto;
+  width: 80vw;
   height: 10vh;
 }
 
 .repl-command-box {
-  width: 90%;
+  width: 100%;
   margin: auto;
   display: flex;
+  left: 50%;
 }
 
 .repl-center {
   display: flex;
   justify-content: center;
+  width: "90%";
+}
+
+.repl-table-column {
+  justify-content: left;
+  font-family: "Courier New";
+  font-size: smaller;
+  text-align: left;
+  min-width: "20%";
+}
+
+
+table {
+  border-collapse: collapse;
+}
+
+.table-cell {
+  border: 1px solid black;
+  margin: 0;
+  padding: 5px;
 }
