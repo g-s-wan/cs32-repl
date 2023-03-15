@@ -55,3 +55,28 @@ table {
   margin: 0;
   padding: 5px;
 }
+
+.response-table {
+  width: 80%;  
+  background-color: black;
+  color: white;                    
+  font-family: "Courier";
+  margin-left:auto;
+  margin-right:auto;
+}
+
+thead {
+  background-color: blue;
+  color: white ;
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background-color: rgba(150, 212, 212, 0.4);
+}
+
+table, th, td {
+  border: 1px solid;
+  border-collapse: collapse;
+  border-color: #96D4D4;
+}

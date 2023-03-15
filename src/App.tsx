@@ -9,25 +9,21 @@ import {modePromise, modeBrief} from "./REPL/modePromise"
 import {loadPromise} from "./REPL/loadPromise"
 import {searchPromise} from "./REPL/searchPromise"
 import {viewPromise} from "./REPL/viewPromise"
-import { history } from "./REPL/History";
+//import { history } from "./REPL/History";
 
 function App() {
 
-//  const [history, setHistory] = useState<(string | string[])[]>([]);
+  const [history, setHistory] = useState<(string | string[])[]>([]);
   const [text, setText] = useState("");
   const [fullCommand, setFullCommand] = useState("");
   const [outputStatus, setOutputStatus] = useState("");
   const [histEntry, setHistEntry] = useState("");
   
- // const [loadedCSV, setLoadedCSV] = useState("");
- // const [csvTable, setCSVTable] = useState<string[]>([]);
-
   const repl = new REPL();
   repl.registerCommand("mode", modePromise);
   repl.registerCommand("load_file", loadPromise);
   repl.registerCommand("view", viewPromise);
   repl.registerCommand("search", searchPromise);
-
 
   useEffect(() => {
     // Do not add anything to the History if the histEntry string changed because it was cleared.
@@ -35,10 +31,9 @@ function App() {
     if (histEntry.length > 0) {
 
       if (!modeBrief) {
-        history.addString("Command " + fullCommand);
-        history.addString(outputStatus + histEntry);
+        setHistory([...history, "Command " + fullCommand + "<br>" + outputStatus + histEntry])
       } else {
-         history.addString(histEntry);
+        setHistory([...history, histEntry])
       }
     }
 

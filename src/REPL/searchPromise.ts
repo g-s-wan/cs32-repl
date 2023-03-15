@@ -1,5 +1,6 @@
-import { history } from "./History";
+
 import { REPLFunction } from "./REPLFunction";
+import { buildHtmlTable} from "./csv2Table";
 
 /**
  * REPL function to call API for searching for a string in the CSV file.
@@ -29,8 +30,7 @@ export const searchPromise :  REPLFunction = args => {
                         if (csvData.length === 0) {
                           resolve('No results found');
                         } else {
-                          history.addTable(csvData);
-                          resolve("Showing search results");
+                          resolve("Showing search results <br>"+  buildHtmlTable(responseObject.data));
                         }
                       }
                 })

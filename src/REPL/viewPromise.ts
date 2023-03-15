@@ -1,6 +1,6 @@
 import { REPLFunction } from "./REPLFunction";
 import { history } from "./History";
-
+import {buildHtmlTable} from "./csv2Table"
 /**
  * REPL function to call API for viewing a CSV file.
  * 
@@ -19,9 +19,7 @@ export const viewPromise :  REPLFunction = args => {
                   return;
                 } else {
 
-                history.addTable(responseObject.data);
-
-                resolve("Viewing CSV data");
+                resolve("Viewing CSV data <br>" +  buildHtmlTable(responseObject.data));
             }})
             .catch((error) => {
                 reject(error);
