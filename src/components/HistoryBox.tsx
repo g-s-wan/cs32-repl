@@ -10,9 +10,17 @@ interface HistoryBoxProps {
  * always visible).
  */
 const AlwaysScrollToBottom = () => {
-  const elementRef = useRef();
-  useEffect(() => elementRef?.current?.scrollIntoView());
-  return <div ref={elementRef} />;
+
+  try {
+
+    // const elementRef = useRef();
+
+    // useEffect(() => elementRef?.current?.scrollIntoView());
+    // return <div ref={elementRef} />;
+    return null;
+  } catch {
+    return null;
+  }
 };
 
 /**
@@ -24,7 +32,7 @@ function HistoryBox(props: HistoryBoxProps) {
   const alternatingColor = ['#d5d5d5', '#a9a9a9'];
 
   return (
-    <div className="repl-history">
+    <div className="repl-history" role="history">
       {history.map((item, index) => (    
              <div key={index} dangerouslySetInnerHTML={{ __html: item.toString() }} /> 
        ))}

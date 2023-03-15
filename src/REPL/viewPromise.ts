@@ -1,5 +1,4 @@
 import { REPLFunction } from "./REPLFunction";
-import { history } from "./History";
 import {buildHtmlTable} from "./csv2Table"
 /**
  * REPL function to call API for viewing a CSV file.

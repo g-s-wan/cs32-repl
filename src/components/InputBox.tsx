@@ -1,5 +1,3 @@
-import { useState } from "react";
-import CSVTable from "./CSVTable";
 
 interface InputBoxProps {
 //  history: (string|string[])[];
@@ -27,6 +25,7 @@ export default function InputBox(props: InputBoxProps) {
   return (
     <div className="repl-input">
       <input
+        role= "input"
         type="text"
         onChange={(e) => props.setText(e.target.value)}
         value={props.text}
@@ -38,9 +37,7 @@ export default function InputBox(props: InputBoxProps) {
         className="repl-command-box"
       />
 
-      <button className="repl-button" onClick={handleSubmit}>
-        Submit
-      </button>
+      <button className="repl-button" onClick={handleSubmit}>Submit</button>
     </div>
   );
 }

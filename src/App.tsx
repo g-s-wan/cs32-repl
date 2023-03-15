@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, KeyboardEvent  } from "react";
 import "../styles/App.css";
 import Header from "./components/Header";
 import HistoryBox from "./components/HistoryBox";
@@ -8,8 +8,9 @@ import {REPL} from "./REPL/REPL"
 import {modePromise, modeBrief} from "./REPL/modePromise"
 import {loadPromise} from "./REPL/loadPromise"
 import {searchPromise} from "./REPL/searchPromise"
+import { helpPromise } from "./REPL/helpPromise";
 import {viewPromise} from "./REPL/viewPromise"
-//import { history } from "./REPL/History";
+import {useKeyPress} from './useKeyPress';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
   repl.registerCommand("load_file", loadPromise);
   repl.registerCommand("view", viewPromise);
   repl.registerCommand("search", searchPromise);
+  repl.registerCommand("help", helpPromise);
 
   useEffect(() => {
     // Do not add anything to the History if the histEntry string changed because it was cleared.
@@ -49,33 +51,72 @@ function App() {
    */
   function handleCommand() {
 
-    // Store the full command (user input) since it gets cleared somewhere else.
-    setFullCommand(text.trim());
-
-    // Do nothing if the user did not provide a command
-    if (text.trim().length == 0)
-      return;
-
-    try {
-      repl.executeCommand(text.trim())
-        .then ( (response) => { setHistEntry(response);            setOutputStatus("Output: ");})
-        .catch( (err)      => { setHistEntry(err.toString());      setOutputStatus("Output (Error):  "); })
-
-    } catch(error) {
-      setHistEntry(`Error executing command: ${error}`);
-      setOutputStatus("Output (Error): ");
-    }
+    executeCommand(text.trim())
   }
+
+  /**
+   * 
+   * @param command 
+   * @returns 
+   */
+  function executeCommand(command: string) {
+        // Store the full command (user input) since it gets cleared somewhere else.
+        setFullCommand(command);
+
+        // Do nothing if the user did not provide a command
+        if (command.length == 0)
+          return;
+    
+        try {
+          repl.executeCommand(command)
+            .then ( (response) => { setHistEntry(response);            setOutputStatus("Output: ");})
+            .catch( (err)      => { setHistEntry(err.toString());      setOutputStatus("Output (Error):  "); })
+    
+        } catch(error) {
+          setHistEntry(`Error executing command: ${error}`);
+          setOutputStatus("Output (Error): ");
+        }
+  }
+
+  const doToggleViewMode = () => {
+    executeCommand("mode");
+  }
+
+  const doView = () => {
+    executeCommand("view");
+  }
+
+  const doHelp = () => {
+    executeCommand("help");
+  }
+
+  const doSearch = () => {
+    setText("search <search text> y <column index>")
+  }
+
+  const doLoad = () => {
+    setText("load_file ./data/<file name>")
+  }
+
+  const doClear = () => {
+    setHistory([])
+  }
+
+  useKeyPress(['m'], doToggleViewMode);
+  useKeyPress(['v'], doView);
+  useKeyPress(['f'], doSearch);
+  useKeyPress(['l'], doLoad);
+  useKeyPress(['r'], doClear);
+  useKeyPress(['?'], doHelp);
 
   /**
    * TSX for the component
    */
   return (
-    <div>
+    <div className="repl-main">
       <Header />
       <div className="repl">
         <HistoryBox history={history}/>
-        <hr />
         <InputBox
             handle={handleCommand}
             text={text}
