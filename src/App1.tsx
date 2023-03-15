@@ -66,7 +66,7 @@ function App1() {
     load_fileCommand(args: string[], mode_message: string) {
       console.log("In load_fileCommand")
       if (args[1] === undefined) {
-        setHistory([...history, "Error: Please enter filepath"]);
+        setHistory([...history, `${mode_message}`, "Error: Please enter filepath"]);
       }
       else {
         const filePath = args[1];
@@ -75,6 +75,8 @@ function App1() {
         fetch('http://localhost:3232/loadcsv?filepath=' + `${filePath}`)
         .then(response => response.json())
         .then(responseObject => {
+          console.log("LOAD");
+          console.log(responseObject);
           if (responseObject.result.includes("error")) {
             // todo: be more specific?
             setHistory([...history,`${mode_message}`, responseObject.message]);
@@ -94,16 +96,18 @@ function App1() {
       console.log("viewing");
 
       if (loadedCSV === "") {
-        setHistory([...history, "No CSV file has been loaded yet"]);
+        setHistory([...history, `${mode_message}`, "No CSV file has been loaded yet"]);
       } else {
         fetch("http://localhost:3232/viewcsv")
         .then(response => response.json())
         .then(responseObject => {
+          console.log("VIEW");
+          console.log(responseObject);
           if (responseObject.result.includes("error")) {
             setHistory([...history,`${mode_message}`, responseObject.message]);
           } else {
             const csvData: string[] = responseObject.data;
-            setHistory([...history, csvData]);
+            setHistory([...history, `${mode_message}`, csvData]);
           }
         });
       }
@@ -208,22 +212,27 @@ function App1() {
       if (args.length < 3) {
         setHistory([...history, "Incorrect number of parameters"]);
       } else {
-        let searchTerm = args[1];
-        let hasHeaders = args[2];
+        let searchTerm;
+        let hasHeaders;
+        args.length === 3 ? searchTerm = args[1] : searchTerm = args[2];
+        args.length === 3 ? hasHeaders = args[2] : hasHeaders = args[3];
         fetch(args.length === 4
-            ? "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}` + "&col=" + `${args[3]}`
+            ? "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}` + "&col=" + `${args[1]}`
             : "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}`
         )
         .then(response => response.json())
         .then(responseObject => { // todo: duplicated code?
+          console.log("search");
+          console.log(responseObject);
           if (responseObject.result.includes("error")) {
             setHistory([...history, `${mode_message}`, responseObject.message]);
           } else {
             let csvData: string[] = responseObject.data;
+            let noResults = "";
             if (csvData.length === 0) {
-              csvData = [`${mode_message}`, "Output: No results found"];
+              noResults = "Output: No results found";
             }
-            setHistory([...history, `${mode_message}`, csvData]);
+            setHistory([...history, `${mode_message}`, noResults]);
           }
         })
       }
@@ -234,6 +243,10 @@ function App1() {
       setHistory([...history, "Available commands: mode,  load_file filename, view, search [searchValue] " +
       "[hasHeaders] [index | column]"]);
     }
+
+    mockLoadCooam
+
+    // todo: define mock loading functions
   }
 
   function handleCommand() {
@@ -266,7 +279,7 @@ function App1() {
 
   }
 
-  const handleShortcut = /*useCallback(*/(event: KeyboardEvent) => {
+  const handleShortcut = useCallback((event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
     if ((event.ctrlKey || event.metaKey) && event.shiftKey && key === 'v') {
       commands['viewCommand'](["view"], mode_message);
@@ -278,7 +291,7 @@ function App1() {
     } else if ((event.ctrlKey || event.metaKey) && event.shiftKey && key === 'h') {
       commands['helpCommand'](["help"], mode_message);
     }
-  }//, [history, mode]);
+  }, [history, mode]);
 
   useEffect(() => {
     executeScroll();

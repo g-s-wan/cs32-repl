@@ -1,4 +1,5 @@
 import "@testing-library/jest-dom";
+import jest from "jest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Header from "../src/components/Header";
@@ -7,6 +8,7 @@ import HistoryBox from "../src/components/HistoryBox";
 import InputBox from "../src/components/InputBox";
 import App1 from "../src/App1";
 import "../styles/App.css";
+import mockFetch from "./mockFetch";
 
 /*
  * This is an example test file.
@@ -15,7 +17,18 @@ import "../styles/App.css";
  */
 
 // beforeEach(() => {
-//   jest.spyOn(window, "fetch").mockImplementation(mockFetch);
+  // const mockMethod = jest.fn<(a: string, b: string) => void>();
+  // jest.mocked(mockFetch).mockImplementation(() => {
+  //   return {
+  //     method: mockMethod,
+  //   };
+  // });
+
+  // return jest.spyOn(window, "fetch").mockImplementation(mockFetch);
+
+//   jest.mock("../src/App1", () => ({
+//     fetch: () => (mockFetch)
+//   }));
 // })
 //
 // afterEach(() => {
@@ -81,5 +94,82 @@ describe("loading works as expected", () => {
     expect(screen.getByText(
         "File access denied. You tried to access " + `${filePath}` + " but only files in " + `${permittedPath}` + " are permitted."
     )).toBeInTheDocument();
+  })
+})
+
+describe("searching works as expected", () => {
+  test("successful search", async () => {
+    render(<App1 />);
+    // Need to load a file first
+    const inputBox = screen.getByRole('input');
+    const filePath = 'data/testFile';
+    await userEvent.type(inputBox, "load_file " + `${filePath}`);
+    await userEvent.click(screen.getByText('Submit'));
+
+    let searchTerm = "Cindy";
+    const hasHeaders = "y";
+    const col = "0";
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "search " + `${col}` + ` ${searchTerm}` + ` ${hasHeaders}`);
+    await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByText(`${searchTerm}`)).toBeInTheDocument();
+    expect(screen.getByText("Li")).toBeInTheDocument();
+    expect(screen.getByText("257")).toBeInTheDocument();
+    expect(screen.getByRole("view-result-table")).toBeInTheDocument();
+
+    searchTerm = "Merigh";
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "search " + `${searchTerm}` + ` ${hasHeaders}`);
+    await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByText(`${searchTerm}`)).toBeInTheDocument();
+    expect(screen.getByText("Safae")).toBeInTheDocument();
+    expect(screen.getByText("Marcy")).toBeInTheDocument();
+  })
+
+  test("search before load", async () => {
+    render(<App1 />);
+  })
+
+  test("search nonexistent column index/name", async() => {
+
+  })
+
+  test("search incorrect number of parameters", async() => {
+
+  })
+
+  test("search no results", async() => {
+
+  })
+
+  test("search hasHeaders is not y or n", async() => {
+
+  })
+}
+)
+
+describe("viewing works as expected", () => {
+  test("successful view", async () => {
+
+  })
+
+  test("view before load", async () => {
+
+  })
+
+  test("load view load view", async () => {
+
+  })
+})
+
+describe("mode works as expected", () => {
+  test("brief to verbose", async () => {
+
+  })
+
+  test("verbose to brief", async () => {
+
   })
 })

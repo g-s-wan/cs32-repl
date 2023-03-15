@@ -69,7 +69,7 @@ function App() {
       if (mode === "BRIEF") {
         setMode("VERBOSE"); //toggle between brief/verbose
         mode_message = ""
-        setHistory([...history, `${mode_message} Output: Mode successfully set to VERBOSE`]);
+        setHistory([...history, `${mode_message}`, `Output: Mode successfully set to VERBOSE`]);
 
       } else {
         mode_message = "Command: " + command_array[0]
@@ -83,7 +83,7 @@ function App() {
     else if (command_array[0].toLowerCase() === "load_file") {
 
       if (command_array[1] === undefined) {
-         setHistory([...history, "Error: Please enter filepath"]);
+         setHistory([...history, `${mode_message}`, "Error: Please enter filepath"]);
       }
       else {
         const filePath = command_array[1];
@@ -93,7 +93,7 @@ function App() {
         .then(response => response.json())
         .then(responseObject => {
           if (responseObject.result.includes("error")) {
-            setHistory([...history, `An error occurred while loading the file`]);
+            setHistory([...history, `${mode_message}`, `An error occurred while loading the file`]);
           } else {
             setLoadedCSV(responseObject.filepath);
             setHistory([...history, `${mode_message} Output: Successfully loaded ${filePath}`]);
@@ -111,7 +111,7 @@ function App() {
       const toDisplay = "";
 
       if (loadedCSV === null) {
-        setHistory([...history, "No CSV file has been loaded yet"]);
+        setHistory([...history, `${mode_message}`, "No CSV file has been loaded yet"]);
       } else {
         fetch("http://localhost:3232/viewcsv")
         .then(response => response.json())
@@ -120,7 +120,7 @@ function App() {
           console.log(responseObject);
           const csvData: string[] = responseObject.data;
 
-          setHistory([...history, csvData]);
+          setHistory([...history, `${mode_message}`, csvData]);
           // csvData.forEach((row) => {
           //   setHistory([...history, row]); // todo: find a better way to display this data
           // })

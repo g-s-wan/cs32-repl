@@ -8,7 +8,7 @@ function CSVTable(props: CSVTableProps) {
 
   return (
       <div className="repl-center">
-        <table>
+        <table role="view-result-table">
           <thead>
           {Object.values(csvTable).map((row) => (
               <tr>{row.toString().split(",").map((word) => (
