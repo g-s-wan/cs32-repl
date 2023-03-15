@@ -1,6 +1,6 @@
 {
-  "name": "repl-gearup",
-  "author": "cs32 TAs",
+  "name": "sprint_4_repl",
+  "author": "GWAN & SMERIGH",
   "license": "UNLICENSED",
   "version": "2023.0.0",
   "type": "module",
@@ -13,8 +13,8 @@
     "test": "vitest"
   },
   "dependencies": {
+    "msw": "^1.1.0",
     "react": "^18.2.0",
-    "react-csv-to-table": "^0.0.4",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {

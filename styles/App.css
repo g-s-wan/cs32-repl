@@ -1,47 +1,78 @@
-h1 {
-  font-size: clamp(0.5rem, 5vw, 4rem);
-}
-
 #root {
   max-width: 1280px;
   margin: 0 auto;
   text-align: center;
+  height: 100%;
 }
 
 .repl {
   position: relative;
-  margin: auto;
+  display: flex !important;
+  width: 100%;
+  background-color: aqua;
+  flex: 1;
+  flex-direction: column;  
 }
 
 .repl-history {
-  height: 50vh;
+  height: calc(100% - 60px);
   margin: auto;
   display: block;
+  width: 100%;
+  bottom: 60px;
+  position: relative;
   overflow: scroll;
+  background-color: burlywood;
+  overflow-x:hidden;
 }
 
 .repl-input {
-  position: sticky;
-  bottom: 0;
-  margin: 5vh auto;
-  width: 80vw;
-  height: 10vh;
+  position: absolute;
+  bottom: 1px;
+  margin: 1vh auto;
+  width: 95%;
+  height: 60px !important;
+  background-color: blueviolet;
+  display: flex;
+  overflow: hidden;
 }
 
 .repl-command-box {
-  width: 100%;
-  margin: auto;
-  display: flex;
-  left: 50%;
+width: 70%;
+margin: auto;
+margin-left: 10px;
+
 }
 
 .repl-center {
   display: flex;
   justify-content: center;
+  width: "90%";
 }
+
+.repl-table-column {
+  justify-content: left;
+  font-family: "Courier New";
+  font-size: smaller;
+  text-align: left;
+  min-width: "20%";
+}
+
+.repl-button {
+  margin: auto;
+  width: 100px;
+  max-height: 35px !important;
+  align-self: center;
+  margin-right: 10px;
+  background-color: yellow;
+  font-size: smaller;
+}
+
 
 table {
   border-collapse: collapse;
+  margin: auto;
+  text-align: left;
 }
 
 .table-cell {
@@ -50,6 +81,40 @@ table {
   padding: 5px;
 }
 
-button {
-  margin-top: 15px;
+.response-table {
+  width: 80%;  
+  background-color: black;
+  color: white;                    
+  font-family: "Courier";
+  margin-left:auto;
+  margin-right:auto;
+}
+
+thead {
+  background-color: blue;
+  color: white ;
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background-color: rgba(150, 212, 212, 0.4);
+}
+
+table, th, td {
+  border: 1px solid;
+  border-collapse: collapse;
+  border-color: #96D4D4;
+}
+
+.repl-main {
+  display: flex !important;
+  justify-content:flex-end;
+  flex-direction: column;
+  align-content:space-between;
+  width: 100%;
+  background-color: red;
+  width: 100%;
+  height: 100%;
+  align-items: stretch;
+
 }

@@ -1,23 +1,43 @@
-import CSVTable from "./CSVTable";
-import {EffectCallback, forwardRef, LegacyRef, useEffect} from "react";
+import { useEffect, useRef} from 'react';
+
 
 interface HistoryBoxProps {
   history: (string|string[])[];
-  scrollRef: LegacyRef<HTMLDivElement>;
 }
 
-function HistoryBox(props: HistoryBoxProps) {
-  const history = props.history;
+/**
+ * Solution that scrolls the History box when new items are added (this ensure that the last elements are 
+ * always visible).
+ */
+const AlwaysScrollToBottom = () => {
 
-  // history.map((item, index) => {
-  //   console.log(typeof item);
-  // })
+  try {
+
+    // const elementRef = useRef();
+
+    // useEffect(() => elementRef?.current?.scrollIntoView());
+    // return <div ref={elementRef} />;
+    return null;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Component that displays the History
+ */
+function HistoryBox(props: HistoryBoxProps) {
+
+  const history = props.history;
+  const alternatingColor = ['#d5d5d5', '#a9a9a9'];
+
   return (
-      // <CSVTable csvTable={props.csvTable} />
-    <div className="repl-history" ref={props.scrollRef}>
-      {history.map((item, index) => (
-          typeof item === "string" ? <div key={index}>{item}<hr/></div> : <div><CSVTable csvTable={item}/><hr/></div>
-      ))}
+    <div className="repl-history" role="history">
+      {history.map((item, index) => (    
+             <div key={index} dangerouslySetInnerHTML={{ __html: item.toString() }} /> 
+       ))}
+
+      <AlwaysScrollToBottom />
     </div>
   );
 }
