@@ -6,9 +6,9 @@ import Header from "../src/components/Header";
 import React, {useState, useEffect, useCallback, useRef} from "react";
 import HistoryBox from "../src/components/HistoryBox";
 import InputBox from "../src/components/InputBox";
-import App1 from "../src/App1";
+import App from "../src/App";
 import "../styles/App.css";
-import mockFetch from "./mockFetch";
+import { mockLoadFetch } from "./mocking/mockLoadFetch";
 
 /*
  * This is an example test file.
@@ -16,82 +16,122 @@ import mockFetch from "./mockFetch";
  * Feel free to research all the other functions that Jest and Testing Library provide!
  */
 
-// beforeEach(() => {
-  // const mockMethod = jest.fn<(a: string, b: string) => void>();
-  // jest.mocked(mockFetch).mockImplementation(() => {
-  //   return {
-  //     method: mockMethod,
-  //   };
-  // });
+const genericLoadError = "An error occurred while loading the file: ";
+const genericSearchError = "An error occurred while searching the file: ";
+const genericViewError = "An error occurred while viewing the file: ";
 
-  // return jest.spyOn(window, "fetch").mockImplementation(mockFetch);
+async function prepareLoad(filePath: string) {
+  const inputBox = screen.getByRole('input');
+  await userEvent.click(inputBox);
+  await userEvent.type(inputBox, "mock_load " + `${filePath}`);
+  await userEvent.click(screen.getByText('Submit'));
+}
 
-//   jest.mock("../src/App1", () => ({
-//     fetch: () => (mockFetch)
-//   }));
-// })
-//
-// afterEach(() => {
-//   jest.restoreAllMocks()
-// });
-
+// todo: update when aria-labels are in
 describe("core elements render", () => {
-  test("loads and displays header", async () => {
-    render(<Header />);
-    expect(screen.getByText(/REPL/i)).toBeInTheDocument();
-  });
-
   test("overall page render", async () => {
-    render(<App1 />);
+    render(<App />)
     expect(screen.getByText(/REPL/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading")).toBeInTheDocuemnt();
+
     expect(screen.getByText("Submit")).toBeInTheDocument();
+    expect(screen.getByRole("button")).toBeInTheDocument();
   })
 });
 
-// todo: why does only the second test (no filepath) work...?
-describe("loading works as expected", () => {
-  test("successful load", async () => {
-    render(<App1 />);
-    const filePath = 'data/testFile';
+describe("viewing works as expected", () => {
+  // todo: seems like a csv is already loaded here - can we set to default before every test?
+  test("view before load", async () => {
+    render(<App />)
     const inputBox = screen.getByRole('input');
     await userEvent.click(inputBox);
-    console.log("load_file " + `${filePath}`);
-    await userEvent.type(inputBox, "load_file " + `${filePath}`);
+    await userEvent.type(inputBox, "mock_view");
     await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByText(`${genericViewError}` + "No CSV file has been loaded yet.")).toBeInTheDocument();
+  })
+
+  test("successful view", async () => {
+    // Load existing file
+    render(<App />)
+    const filePath = 'data/testFile';
+    const inputBox = screen.getByRole('input');
+    await prepareLoad(filePath)
+
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mock_view");
+    await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(screen.getByText("FirstName")).toBeInTheDocument();
+    expect(screen.getByText("Merigh")).toBeInTheDocument();
+    expect(screen.getByText("257")).toBeInTheDocument();
+
+  })
+
+  test("load view load view", async () => {
+    render(<App />)
+    let filePath = 'data/testFile';
+    const inputBox = screen.getByRole('input');
+    await prepareLoad(filePath)
+
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mock_view");
+    await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(screen.getByText("FirstName")).toBeInTheDocument();
+    expect(screen.getByText("Merigh")).toBeInTheDocument();
+    expect(screen.getByText("257")).toBeInTheDocument();
+
+    // unhandled request?
+    filePath = 'data/testFile2'
+    await prepareLoad(filePath);
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mock_view");
+    await userEvent.click(screen.getByText('Submit'));
+
+    // todo: get tables by accessibiltiy label?
+    // Expect old table to still be in the DOM
+    expect(screen.getByText("FirstName")).toBeInTheDocument();
+    expect(screen.getByText("Merigh")).toBeInTheDocument();
+    expect(screen.getByText("257")).toBeInTheDocument();
+
+    // Expect new table to be in the DOM
+    expect(screen.getByText("Tom")).toBeInTheDocument();
+    expect(screen.getByText("Wan")).toBeInTheDocument();
+    expect(screen.getByText("Cindy")).toBeInTheDocument();
+    expect(screen.getByText("Nowhere")).toBeInTheDocument();
+  })
+})
+
+describe("loading works as expected", () => {
+  test("successful load", async () => {
+    const filePath = "data/testFile";
+    await prepareLoad("data/testFile")
 
     expect(screen.getByText("Successfully loaded " + `${filePath}`)).toBeInTheDocument();
   })
 
   test("loading without filepath", async () => {
-    render(<App1 />);
-    const inputBox = screen.getByRole('input');
-    await userEvent.click(inputBox);
-    await userEvent.type(inputBox, "load_file");
-    await userEvent.click(screen.getByText('Submit'));
+    await prepareLoad("")
 
-    expect(screen.getByText("Error: Please enter filepath")).toBeInTheDocument();
+    expect(screen.getByText("Please include a filepath when using the load_file command.")).toBeInTheDocument();
   })
 
   test("loading nonexistent file", async () => {
-    render(<App1 />);
-    const inputBox = screen.getByRole('input');
-    await userEvent.click(inputBox);
-    await userEvent.type(inputBox, "load_file data/drijleijrlyij");
-    await userEvent.click(screen.getByText('Submit'));
+    const filePath = "data/drijleijrlyij";
+    await prepareLoad(filePath);
 
-    expect(screen.getByText("Could not find a file associated with the provided filepath. Did you make a typo?")).toBeInTheDocument();
+    expect(screen.getByText(`${genericLoadError}` + "Could not find a file associated with the provided filepath. Did you make a typo?")).toBeInTheDocument();
   })
 
   test("loading file outside of permitted directory", async () => {
-    render(<App1 />);
-    const inputBox = screen.getByRole('input');
     const filePath = "sijlijsrlj";
     const permittedPath = "./data";
-    await userEvent.click(inputBox);
-    await userEvent.type(inputBox, "load_file " + `${filePath}`);
-    await userEvent.click(screen.getByText('Submit'));
+    await prepareLoad(filePath);
 
-    expect(screen.getByText(
+    expect(screen.getByText(`${genericLoadError}` +
         "File access denied. You tried to access " + `${filePath}` + " but only files in " + `${permittedPath}` + " are permitted."
     )).toBeInTheDocument();
   })
@@ -99,37 +139,34 @@ describe("loading works as expected", () => {
 
 describe("searching works as expected", () => {
   test("successful search", async () => {
-    render(<App1 />);
+    render(<App />)
     // Need to load a file first
     const inputBox = screen.getByRole('input');
     const filePath = 'data/testFile';
-    await userEvent.type(inputBox, "load_file " + `${filePath}`);
-    await userEvent.click(screen.getByText('Submit'));
+    await prepareLoad(filePath);
 
     let searchTerm = "Cindy";
     const hasHeaders = "y";
     const col = "0";
     await userEvent.click(inputBox);
-    await userEvent.type(inputBox, "search " + `${col}` + ` ${searchTerm}` + ` ${hasHeaders}`);
+    await userEvent.type(inputBox, "mock_search " + `${col}` + ` ${searchTerm}` + ` ${hasHeaders}`);
     await userEvent.click(screen.getByText('Submit'));
 
-    expect(screen.getByText(`${searchTerm}`)).toBeInTheDocument();
-    expect(screen.getByText("Li")).toBeInTheDocument();
-    expect(screen.getByText("257")).toBeInTheDocument();
+    expect(screen.getByText("Showing search results")).toBeInTheDocument();
+    // todo: HTML makes it difficult to get by text, but the output of the test shows this is present
+    expect(screen.getByText("Row 3: Cindy,Li,257")).toBeInTheDocument();
     expect(screen.getByRole("view-result-table")).toBeInTheDocument();
 
     searchTerm = "Merigh";
     await userEvent.click(inputBox);
-    await userEvent.type(inputBox, "search " + `${searchTerm}` + ` ${hasHeaders}`);
+    await userEvent.type(inputBox, "mock_search " + `${searchTerm}` + ` ${hasHeaders}`);
     await userEvent.click(screen.getByText('Submit'));
 
-    expect(screen.getByText(`${searchTerm}`)).toBeInTheDocument();
-    expect(screen.getByText("Safae")).toBeInTheDocument();
-    expect(screen.getByText("Marcy")).toBeInTheDocument();
+    expect(screen.getByText("Row 1: Safae,Merigh,Marcy")).toBeInTheDocument();
   })
 
   test("search before load", async () => {
-    render(<App1 />);
+
   })
 
   test("search nonexistent column index/name", async() => {
@@ -150,26 +187,28 @@ describe("searching works as expected", () => {
 }
 )
 
-describe("viewing works as expected", () => {
-  test("successful view", async () => {
-
-  })
-
-  test("view before load", async () => {
-
-  })
-
-  test("load view load view", async () => {
-
-  })
-})
-
 describe("mode works as expected", () => {
   test("brief to verbose", async () => {
+    render(<App />);
+    const inputBox = screen.getByRole('input');
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mode");
+    await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByText("Command: mode" + "Output: Mode successfully set to VERBOSE")).toBeInTheDocument();
 
   })
 
   test("verbose to brief", async () => {
+    render(<App />);
+    const inputBox = screen.getByRole('input');
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mode");
+    await userEvent.click(screen.getByText('Submit'));
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mode");
+    await userEvent.click(screen.getByText('Submit'));
 
+    expect(screen.getByText("Mode successfully set to BRIEF")).toBeInTheDocument();
   })
 })

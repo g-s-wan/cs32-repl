@@ -33,11 +33,12 @@ function HistoryBox(props: HistoryBoxProps) {
 
   return (
     <div className="repl-history" role="history">
-      {history.map((item, index) => (    
-             <div key={index} dangerouslySetInnerHTML={{ __html: item.toString() }} /> 
+      {history.map((item, index) => (
+          <div>
+             <div key={index} dangerouslySetInnerHTML={{ __html: item.toString() }}/>
+              <hr/>
+          </div>
        ))}
-
-      <AlwaysScrollToBottom />
     </div>
   );
 }

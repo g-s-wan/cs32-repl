@@ -1,5 +1,5 @@
-import { REPLFunction } from "./REPLFunction";
-import {buildHtmlTable} from "./csv2Table"
+import { REPLFunction } from "../REPLFunction";
+import {buildHtmlTable} from "../csv2Table"
 /**
  * REPL function to call API for viewing a CSV file.
  * 

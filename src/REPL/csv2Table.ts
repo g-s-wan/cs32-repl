@@ -8,7 +8,7 @@ export function buildHtmlTable(csvDataset: string[][]) {
     const colCount = 1 + csvDataset[0].length;
 
     // The HTML for the table
-    let tableHTML = '<table class="response-table">';
+    let tableHTML = '<table class="response-table" role="table">';
 
 
     // Now add the data rows

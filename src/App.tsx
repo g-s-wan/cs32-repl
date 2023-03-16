@@ -5,12 +5,15 @@ import HistoryBox from "./components/HistoryBox";
 import InputBox from "./components/InputBox";
 
 import {REPL} from "./REPL/REPL"
-import {modePromise, modeBrief} from "./REPL/modePromise"
-import {loadPromise} from "./REPL/loadPromise"
-import {searchPromise} from "./REPL/searchPromise"
-import { helpPromise } from "./REPL/helpPromise";
-import {viewPromise} from "./REPL/viewPromise"
+import {modePromise, modeBrief} from "./REPL/promises/modePromise"
+import {loadPromise} from "./REPL/promises/loadPromise"
+import {searchPromise} from "./REPL/promises/searchPromise"
+import { helpPromise } from "./REPL/promises/helpPromise";
+import {viewPromise} from "./REPL/promises/viewPromise"
 import {useKeyPress} from './useKeyPress';
+import {mockLoadPromise} from "../tests/mocking/mockLoadPromise";
+import {mockViewPromise} from "../tests/mocking/mockViewPromise";
+import {mockSearchPromise} from "../tests/mocking/mockSearchPromise";
 
 function App() {
 
@@ -27,13 +30,18 @@ function App() {
   repl.registerCommand("search", searchPromise);
   repl.registerCommand("help", helpPromise);
 
+  // For mocking
+  repl.registerCommand("mock_load", mockLoadPromise);
+  repl.registerCommand("mock_view", mockViewPromise);
+  repl.registerCommand("mock_search", mockSearchPromise);
+
   useEffect(() => {
     // Do not add anything to the History if the histEntry string changed because it was cleared.
     //
     if (histEntry.length > 0) {
 
       if (!modeBrief) {
-        setHistory([...history, "Command " + fullCommand + "<br>" + outputStatus + histEntry])
+        setHistory([...history, "Command: " + fullCommand + "<br>" + outputStatus + histEntry])
       } else {
         setHistory([...history, histEntry])
       }

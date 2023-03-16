@@ -1,4 +1,4 @@
-import { REPLFunction } from "./REPLFunction";
+import { REPLFunction } from "../REPLFunction";
 
 /**
  * REPL function to handle the case of unregistered commands.
@@ -9,6 +9,6 @@ export const invalidCommandPromise :  REPLFunction = args => {
     return new Promise<string>
         ((resolve, reject) => {
             // This function always send a reject.
-            reject('Invalid command.')
+            reject('Could not recognize that command. Submit "help" to view a list of registered commands.');
         });
 }

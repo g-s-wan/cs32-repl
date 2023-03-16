@@ -1,6 +1,6 @@
 
-import { REPLFunction } from "./REPLFunction";
-import { buildHtmlTable} from "./csv2Table";
+import { REPLFunction } from "../REPLFunction";
+import { buildHtmlTable} from "../csv2Table";
 
 /**
  * REPL function to call API for searching for a string in the CSV file.
@@ -12,12 +12,13 @@ import { buildHtmlTable} from "./csv2Table";
 export const searchPromise :  REPLFunction = args => {
     return new Promise<string>
         ((resolve, reject) => {
-
             if (args.length >= 2) {
-                const searchTerm = args[0];
-                const hasHeaders = args[1];
+                let searchTerm;
+                let hasHeaders;
+                args.length === 2 ? searchTerm = args[0] : searchTerm = args[1];
+                args.length === 2 ? hasHeaders = args[1] : hasHeaders = args[2]
                 fetch(args.length === 3
-                    ? "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}` + "&col=" + `${args[2]}`
+                    ? "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}` + "&col=" + `${args[0]}`
                     : "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}`
                 )
                 .then(response => response.json())
@@ -40,7 +41,7 @@ export const searchPromise :  REPLFunction = args => {
                 });
 
             }  else {
-                reject("Insufficient number of parameters");
+                reject("Incorrect number of parameters.");
                 return;
             }
 

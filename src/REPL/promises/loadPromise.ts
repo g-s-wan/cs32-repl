@@ -1,4 +1,4 @@
-import { REPLFunction } from "./REPLFunction";
+import { REPLFunction } from "../REPLFunction";
 
 /**
  * REPL function to call API for loading CSV file.
@@ -34,7 +34,7 @@ export const loadPromise :  REPLFunction = args => {
                 }
 
             }  else {
-                reject("Please enter filepath.");
+                reject("Please include a filepath when using the load_file command.");
                 return;
             }
 

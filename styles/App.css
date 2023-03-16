@@ -1,3 +1,8 @@
+h1 {
+  color: #EFE6DD;
+  padding-bottom: 20px;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -9,9 +14,10 @@
   position: relative;
   display: flex !important;
   width: 100%;
-  background-color: aqua;
+  background-color: #7EBDC2;
   flex: 1;
-  flex-direction: column;  
+  flex-direction: column;
+  align-items: center;
 }
 
 .repl-history {
@@ -22,8 +28,9 @@
   bottom: 60px;
   position: relative;
   overflow: scroll;
-  background-color: burlywood;
+  background-color: #EFE6DD;
   overflow-x:hidden;
+  padding: 10px;
 }
 
 .repl-input {
@@ -32,7 +39,7 @@
   margin: 1vh auto;
   width: 95%;
   height: 60px !important;
-  background-color: blueviolet;
+  background-color: #2B303A;
   display: flex;
   overflow: hidden;
 }
@@ -64,8 +71,9 @@ margin-left: 10px;
   max-height: 35px !important;
   align-self: center;
   margin-right: 10px;
-  background-color: yellow;
+  background-color: #BB4430;
   font-size: smaller;
+  color: #EFE6DD;
 }
 
 
@@ -112,7 +120,7 @@ table, th, td {
   flex-direction: column;
   align-content:space-between;
   width: 100%;
-  background-color: red;
+  background-color: #BB4430;
   width: 100%;
   height: 100%;
   align-items: stretch;

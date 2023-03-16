@@ -1,4 +1,4 @@
-import { REPLFunction } from "./REPLFunction";
+import { REPLFunction } from "../REPLFunction";
 
 export let modeBrief : boolean = true;
 

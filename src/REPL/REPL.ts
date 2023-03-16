@@ -1,5 +1,5 @@
 import { REPLFunction } from "./REPLFunction";
-import {invalidCommandPromise} from "./invalidCommandPromise"
+import {invalidCommandPromise} from "./promises/invalidCommandPromise"
 /**
  * Class REPL inspired by Java inspired by the Java REPL livecode from lecture.
  */
@@ -38,7 +38,7 @@ export class REPL {
         let replFunction = this.registeredCommands.get(command_prefix);
 
         // Special function when the command is not registered
-        if ( replFunction == undefined) {
+        if (replFunction == undefined) {
             replFunction = invalidCommandPromise;
         }
 
