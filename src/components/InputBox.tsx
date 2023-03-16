@@ -37,7 +37,7 @@ export default function InputBox(props: InputBoxProps) {
         className="repl-command-box"
       />
 
-      <button role="button" className="repl-button" onClick={handleSubmit} role="submit">Submit</button>
+      <button role="button" className="repl-button" onClick={handleSubmit}>Submit</button>
     </div>
   );
 }
