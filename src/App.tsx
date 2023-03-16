@@ -82,11 +82,11 @@ function App() {
         try {
           repl.executeCommand(command)
             .then ( (response) => { setHistEntry(response);            setOutputStatus("Output: ");})
-            .catch( (err)      => { setHistEntry(err.toString());      setOutputStatus("Output (Error):  "); })
+            .catch( (err)      => { setHistEntry(err.toString());      setOutputStatus("Output: (Error) "); })
     
         } catch(error) {
           setHistEntry(`Error executing command: ${error}`);
-          setOutputStatus("Output (Error): ");
+          setOutputStatus("Output: (Error) ");
         }
   }
 
