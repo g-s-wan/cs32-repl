@@ -13,6 +13,13 @@ export function mockLoadFetch(url: URL | RequestInfo): loadResponse {
         message: "Successfully loaded data/testFile"
       };
     }
+    case "http://localhost:3232/loadcsv?filepath=data/testFile2": {
+      return {
+        result: "success",
+        filepath: "data/testFile2",
+        message: "Successfully loaded data/testFile2"
+      };
+    }
     case "http://localhost:3232/loadcsv?filepath=sijlijsrlj" : {
       return {
         result: "error_bad_request",

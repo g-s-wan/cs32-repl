@@ -20,7 +20,7 @@ export function buildHtmlTable(csvDataset: string[][]) {
     csvDataset.forEach(row => {
         tableHTML += '<tr>';
         row.forEach(value => {
-            tableHTML += '<td style = "width: ' + (100/colCount) + '%" >' + value +'</td>';
+            tableHTML += '<td role="cell" style = "width: ' + (100/colCount) + '%" >' + value +'</td>';
         });
         tableHTML += '</tr>';
     });

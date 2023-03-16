@@ -11,10 +11,11 @@ export const mockSearchPromise :  REPLFunction = args => {
       args.length === 2 ? searchTerm = args[0] : searchTerm = args[1];
       args.length === 2 ? hasHeaders = args[1] : hasHeaders = args[2];
       let responseObject;
-      args.length === 2
-          ? responseObject = mockSearchFetch("http://localhost:3232/searchcsv" + "?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}`)
-          : responseObject = mockSearchFetch("http://localhost:3232/searchcsv" + "?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}` + "&col=" + `${args[0]}`)
-
+      args.length === 3
+          ? responseObject = mockSearchFetch("http://localhost:3232/searchcsv" + "?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}` + "&col=" + `${args[0]}`)
+          : responseObject = mockSearchFetch("http://localhost:3232/searchcsv" + "?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}`)
+      console.log("AAAAAAAH");
+      console.log(responseObject);
       if (responseObject.result.includes("error")) {
         reject(`An error occurred while searching the file: ${responseObject.message}`);
         return;
