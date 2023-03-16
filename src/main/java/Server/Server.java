@@ -2,6 +2,7 @@ package Server;
 
 import static spark.Spark.after;
 
+import Server.handlers.csv.ClearHandler;
 import Server.handlers.csv.LoadHandler;
 import Server.handlers.csv.SearchHandler;
 import Server.handlers.csv.State;
@@ -25,6 +26,7 @@ public class Server {
         Spark.get("loadcsv", new LoadHandler(state));
         Spark.get("viewcsv", new ViewHandler(state));
         Spark.get("searchcsv", new SearchHandler(state));
+        Spark.get("clear", new ClearHandler(state));
         Spark.init();
         Spark.awaitInitialization();
         System.out.println("Server started in port " + portNum);

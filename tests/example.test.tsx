@@ -8,7 +8,6 @@ import HistoryBox from "../src/components/HistoryBox";
 import InputBox from "../src/components/InputBox";
 import App from "../src/App";
 import "../styles/App.css";
-import { mockLoadFetch } from "./mocking/mockLoadFetch";
 
 /*
  * This is an example test file.
@@ -32,7 +31,7 @@ describe("core elements render", () => {
   test("overall page render", async () => {
     render(<App />)
     expect(screen.getByText(/REPL/i)).toBeInTheDocument();
-    expect(screen.getByRole("heading")).toBeInTheDocuemnt();
+    expect(screen.getByRole("heading")).toBeInTheDocument();
 
     expect(screen.getByText("Submit")).toBeInTheDocument();
     expect(screen.getByRole("button")).toBeInTheDocument();
@@ -40,12 +39,12 @@ describe("core elements render", () => {
 });
 
 describe("viewing works as expected", () => {
-  // todo: seems like a csv is already loaded here - can we set to default before every test?
   test("view before load", async () => {
     render(<App />)
     const inputBox = screen.getByRole('input');
+
     await userEvent.click(inputBox);
-    await userEvent.type(inputBox, "mock_view");
+    await userEvent.type(inputBox, "mock_view beforeload");
     await userEvent.click(screen.getByText('Submit'));
 
     expect(screen.getByText(`${genericViewError}` + "No CSV file has been loaded yet.")).toBeInTheDocument();
@@ -107,6 +106,7 @@ describe("viewing works as expected", () => {
 
 describe("loading works as expected", () => {
   test("successful load", async () => {
+    render(<App />);
     const filePath = "data/testFile";
     await prepareLoad("data/testFile")
 
@@ -114,12 +114,14 @@ describe("loading works as expected", () => {
   })
 
   test("loading without filepath", async () => {
+    render(<App />);
     await prepareLoad("")
 
     expect(screen.getByText("Please include a filepath when using the load_file command.")).toBeInTheDocument();
   })
 
   test("loading nonexistent file", async () => {
+    render(<App />);
     const filePath = "data/drijleijrlyij";
     await prepareLoad(filePath);
 
@@ -127,6 +129,7 @@ describe("loading works as expected", () => {
   })
 
   test("loading file outside of permitted directory", async () => {
+    render(<App />);
     const filePath = "sijlijsrlj";
     const permittedPath = "./data";
     await prepareLoad(filePath);
@@ -210,5 +213,16 @@ describe("mode works as expected", () => {
     await userEvent.click(screen.getByText('Submit'));
 
     expect(screen.getByText("Mode successfully set to BRIEF")).toBeInTheDocument();
+  })
+})
+
+describe("clearing works as expected", () => {
+  test("successful clear", async () => {
+    render(<App />)
+    const inputBox = screen.getByRole('input');
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mock_clear");
+    await userEvent.click(screen.getByText('Submit'));
+    expect(screen.getByText("Loaded CSV has been cleared.")).toBeInTheDocument();
   })
 })

@@ -1,5 +1,5 @@
-import { REPLFunction } from "../../src/REPL/REPLFunction";
-import {mockLoadFetch, loadResponse } from "./mockLoadFetch"
+import { REPLFunction } from "../../../src/REPL/REPLFunction";
+import {mockLoadFetch, loadResponse } from "../mockLoadFetch"
 
 /**
  * REPL function to call API for loading CSV file.

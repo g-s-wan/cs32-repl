@@ -26,6 +26,7 @@ export function mockViewFetch(url: URL | RequestInfo): viewResponse {
         data: [[]]
       }
     }
+
     default: {
       throw new Error(`Unhandled request: ${url}`);
     }

@@ -9,11 +9,13 @@ import {modePromise, modeBrief} from "./REPL/promises/modePromise"
 import {loadPromise} from "./REPL/promises/loadPromise"
 import {searchPromise} from "./REPL/promises/searchPromise"
 import { helpPromise } from "./REPL/promises/helpPromise";
-import {viewPromise} from "./REPL/promises/viewPromise"
+import {viewPromise} from "./REPL/promises/viewPromise";
+import {clearPromise} from "./REPL/promises/clearPromise";
 import {useKeyPress} from './useKeyPress';
-import {mockLoadPromise} from "../tests/mocking/mockLoadPromise";
-import {mockViewPromise} from "../tests/mocking/mockViewPromise";
-import {mockSearchPromise} from "../tests/mocking/mockSearchPromise";
+import {mockLoadPromise} from "../tests/mocking/promises/mockLoadPromise";
+import {mockViewPromise} from "../tests/mocking/promises/mockViewPromise";
+import {mockSearchPromise} from "../tests/mocking/promises/mockSearchPromise";
+import {mockClearPromise} from "../tests/mocking/promises/mockClearPromise";
 
 function App() {
 
@@ -29,11 +31,13 @@ function App() {
   repl.registerCommand("view", viewPromise);
   repl.registerCommand("search", searchPromise);
   repl.registerCommand("help", helpPromise);
+  repl.registerCommand("clear", clearPromise);
 
   // For mocking
   repl.registerCommand("mock_load", mockLoadPromise);
   repl.registerCommand("mock_view", mockViewPromise);
   repl.registerCommand("mock_search", mockSearchPromise);
+  repl.registerCommand("mock_clear", mockClearPromise);
 
   useEffect(() => {
     // Do not add anything to the History if the histEntry string changed because it was cleared.

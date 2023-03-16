@@ -1,6 +1,6 @@
-import {REPLFunction} from "../../src/REPL/REPLFunction";
-import {buildHtmlTable} from "../../src/REPL/csv2Table";
-import {mockSearchFetch} from "./mockSearchFetch";
+import {REPLFunction} from "../../../src/REPL/REPLFunction";
+import {buildHtmlTable} from "../../../src/REPL/csv2Table";
+import {mockSearchFetch} from "../mockSearchFetch";
 
 export const mockSearchPromise :  REPLFunction = args => {
   return new Promise<string>
