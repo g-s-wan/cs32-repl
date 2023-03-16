@@ -19,6 +19,15 @@ export function mockSearchFetch(url: URL | RequestInfo): searchResponse {
         data:  [ [ "Row 3: Cindy,Li,257" ] ]
       };
     }
+    case "http://localhost:3232/searchcsv?searchterm=Merigh&hasheaders=n": {
+      return {
+        result: "success",
+        searchterm: "Merigh",
+        hasheaders: "n",
+        column: "null",
+        data:  [ [ "Row 1: Safae,Merigh,Marcy" ] ]
+      };
+    }
     // Search before load
     case "http://localhost:3232/searchcsv?searchterm=beforeload&hasheaders=y" : {
       return {

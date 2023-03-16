@@ -83,23 +83,22 @@ describe("viewing works as expected", () => {
     expect(screen.getByText("Merigh")).toBeInTheDocument();
     expect(screen.getByText("257")).toBeInTheDocument();
 
-    // unhandled request?
     filePath = 'data/testFile2'
     await prepareLoad(filePath);
     await userEvent.click(inputBox);
-    await userEvent.type(inputBox, "mock_view");
+    await userEvent.type(inputBox, "mock_view 2");
     await userEvent.click(screen.getByText('Submit'));
 
     // todo: get tables by accessibiltiy label?
     // Expect old table to still be in the DOM
-    expect(screen.getByText("FirstName")).toBeInTheDocument();
-    expect(screen.getByText("Merigh")).toBeInTheDocument();
-    expect(screen.getByText("257")).toBeInTheDocument();
+    expect(screen.getAllByText("LastName")[0]).toBeInTheDocument();
+    expect(screen.getByText("Li")).toBeInTheDocument();
+    expect(screen.getByText("Safae")).toBeInTheDocument();
 
     // Expect new table to be in the DOM
     expect(screen.getByText("Tom")).toBeInTheDocument();
-    expect(screen.getByText("Wan")).toBeInTheDocument();
-    expect(screen.getByText("Cindy")).toBeInTheDocument();
+    expect(screen.getByText("Fisler")).toBeInTheDocument();
+    expect(screen.getByText("RhodeIsland")).toBeInTheDocument();
     expect(screen.getByText("Nowhere")).toBeInTheDocument();
   })
 })
@@ -149,23 +148,26 @@ describe("searching works as expected", () => {
     await prepareLoad(filePath);
 
     let searchTerm = "Cindy";
-    const hasHeaders = "y";
+    let hasHeaders = "y";
     const col = "0";
     await userEvent.click(inputBox);
     await userEvent.type(inputBox, "mock_search " + `${col}` + ` ${searchTerm}` + ` ${hasHeaders}`);
     await userEvent.click(screen.getByText('Submit'));
 
     expect(screen.getByText("Showing search results")).toBeInTheDocument();
-    // todo: HTML makes it difficult to get by text, but the output of the test shows this is present
-    expect(screen.getByText("Row 3: Cindy,Li,257")).toBeInTheDocument();
-    expect(screen.getByRole("view-result-table")).toBeInTheDocument();
+    expect(screen.getByRole("cell")).toBeInTheDocument();
+    expect(screen.getByRole("cell").innerHTML).toEqual("Row 3: Cindy,Li,257");
+    expect(screen.getByRole("table")).toBeInTheDocument();
 
     searchTerm = "Merigh";
+    hasHeaders = "n";
     await userEvent.click(inputBox);
     await userEvent.type(inputBox, "mock_search " + `${searchTerm}` + ` ${hasHeaders}`);
     await userEvent.click(screen.getByText('Submit'));
 
-    expect(screen.getByText("Row 1: Safae,Merigh,Marcy")).toBeInTheDocument();
+    expect(screen.getAllByRole("cell")[1]).toBeInTheDocument();
+    expect(screen.getAllByRole("cell")[1].innerHTML).toEqual("Row 1: Safae,Merigh,Marcy");
+    expect(screen.getAllByRole("table")[1]).toBeInTheDocument();
   })
 
   test("search before load", async () => {

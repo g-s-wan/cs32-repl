@@ -14,6 +14,12 @@ export function mockViewFetch(url: URL | RequestInfo): viewResponse {
         data: [ [ "FirstName", "LastName", "City" ], [ "Safae", "Merigh", "Marcy" ], [ "Grace", "Wan", "Offcampus" ], [ "Cindy", "Li", "257" ] ]
       };
     }
+    case "http://localhost:3232/viewcsv?2": {
+      return {
+        result: "success",
+        data: [ [ "FirstName", "LastName", "City" ], [ "Tim", "Nelson", "CIT" ], [ "Tom", "Doeppner", "RhodeIsland" ], [ "Kathi", "Fisler", "Providence" ], [ "Unknown", "Tester", "Nowhere" ] ]
+      };
+    }
     case "http://localhost:3232/viewcsv?beforeload": {
       return {
         result: "error_bad_request",
