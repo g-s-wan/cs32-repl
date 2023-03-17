@@ -1,9 +1,9 @@
-import { REPLFunction } from "../../../src/REPL/REPLFunction";
-import {buildHtmlTable} from "../../../src/REPL/csv2Table"
+import { REPLFunction } from "../../../src/frontend/REPL/REPLFunction";
+import {buildHtmlTable} from "../../../src/frontend/REPL/csv2Table"
 import {mockViewFetch} from "../mockViewFetch";
 
 /**
- * REPL function to call API for viewing a CSV file.
+ * Mocks a REPL function that calls API for viewing a CSV file.
  *
  * @param args : arguments to the REPL function
  * @returns a Promise that returns a string to be added to the History window.
@@ -11,6 +11,8 @@ import {mockViewFetch} from "../mockViewFetch";
 export const mockViewPromise :  REPLFunction = args => {
     return new Promise<string>
     ((resolve, reject) => {
+        // Because the API doesn't care about extra arguments for search, we can use this to
+        // differentiate between similar entries in the collection of mocked JSONs
         let extraParam;
         args.length === 1 ? extraParam = "?" + args[0] : extraParam = ""
         const responseObject = mockViewFetch("http://localhost:3232/viewcsv" + `${extraParam}`);

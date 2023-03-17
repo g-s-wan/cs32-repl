@@ -4,8 +4,8 @@ import jest from "jest-mock";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import App from "../src/App";
-import "../styles/App.css";
-import { REPL } from "../src/REPL/REPL";
+import "../src/frontend/styles/App.css";
+import { REPL } from "../src/frontend/REPL/REPL";
 import {hugPromise} from "./mocking/promises/hugPromise"
 import {sleepPromise} from "./mocking/promises/sleepPromise";
 
@@ -150,14 +150,14 @@ describe("searching works as expected", () => {
 
     let searchTerm = "Cindy";
     let hasHeaders = "y";
-    const col = "0";
+    const col = "FirstName";
     await userEvent.click(inputBox);
     await userEvent.type(inputBox, "mock_search " + `${col}` + ` ${searchTerm}` + ` ${hasHeaders}`);
     await userEvent.click(screen.getByRole('button'));
 
     expect(screen.getByText("Showing search results")).toBeInTheDocument();
     expect(screen.getByRole("cell")).toBeInTheDocument();
-    expect(screen.getByRole("cell").innerHTML).toEqual("Row 3: Cindy,Li,257");
+    expect(screen.getByRole("cell").innerHTML).toEqual("Cindy,Li,257");
     expect(screen.getByRole("table")).toBeInTheDocument();
 
     searchTerm = "Merigh";
@@ -167,7 +167,7 @@ describe("searching works as expected", () => {
     await userEvent.click(screen.getByRole('button'));
 
     expect(screen.getAllByRole("cell")[1]).toBeInTheDocument();
-    expect(screen.getAllByRole("cell")[1].innerHTML).toEqual("Row 1: Safae,Merigh,Marcy");
+    expect(screen.getAllByRole("cell")[1].innerHTML).toEqual("Safae,Merigh,Marcy");
     expect(screen.getAllByRole("table")[1]).toBeInTheDocument();
   })
 
@@ -217,15 +217,14 @@ describe("searching works as expected", () => {
     render(<App/>);
     const searchTerm = "noresults";
     const hasHeaders = "y";
-    const col = "2";
     const inputBox = screen.getByRole('input');
 
     await userEvent.click(inputBox);
-    await userEvent.type(inputBox, "mock_search " + `${col} ` + `${searchTerm} ` + `${hasHeaders}`);
+    await userEvent.type(inputBox, "mock_search " + `${searchTerm} ` + `${hasHeaders}`);
     await userEvent.click(screen.getByRole('button'));
 
     expect(screen.getByText("No results found")).toBeInTheDocument();
-
+    expect(screen.getByRole("main")).toContainHTML("No results found");
   })
 
   test("search hasHeaders is not y or n", async() => {

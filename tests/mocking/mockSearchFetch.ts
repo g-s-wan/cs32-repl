@@ -1,3 +1,4 @@
+// Mocks a JSON response from the server
 export interface searchResponse {
   result: string;
   data?: string[][];
@@ -10,22 +11,23 @@ export interface searchResponse {
 export function mockSearchFetch(url: URL | RequestInfo): searchResponse {
   switch (url) {
     // Successful search
-    case "http://localhost:3232/searchcsv?searchterm=Cindy&hasheaders=y&col=0": {
+    case "http://localhost:3232/searchcsv?searchterm=Cindy&hasheaders=y&col=FirstName": {
       return {
         result: "success",
         searchterm: "Cindy",
         hasheaders: "y",
-        column: "0",
-        data:  [ [ "Row 3: Cindy,Li,257" ] ]
+        column: "FirstName",
+        data:  [ [ "Cindy,Li,257" ] ]
       };
     }
+    // Test another successful search
     case "http://localhost:3232/searchcsv?searchterm=Merigh&hasheaders=n": {
       return {
         result: "success",
         searchterm: "Merigh",
         hasheaders: "n",
         column: "null",
-        data:  [ [ "Row 1: Safae,Merigh,Marcy" ] ]
+        data:  [ [ "Safae,Merigh,Marcy" ] ]
       };
     }
     // Search before load
@@ -35,7 +37,7 @@ export function mockSearchFetch(url: URL | RequestInfo): searchResponse {
         message: "No CSV file has been loaded yet."
       }
     }
-    // search nonexistent column index/name
+    // Nonexistent column index/name
     case "http://localhost:3232/searchcsv?searchterm=Merigh&hasheaders=y&col=eu49ueriyli": {
       return {
         result: "error_bad_request",
@@ -45,7 +47,7 @@ export function mockSearchFetch(url: URL | RequestInfo): searchResponse {
         column: "eu49ueriyli"
       };
     }
-    //search incorrect number of parameters
+    // Incorrect number of parameters
     case "http://localhost:3232/searchcsv?searchterm=Merigh&col=0": {
       return {
         result: "error_bad_request",
@@ -54,17 +56,17 @@ export function mockSearchFetch(url: URL | RequestInfo): searchResponse {
         column: "0"
       };
     }
-    // search no results
-    case "http://localhost:3232/searchcsv?searchterm=noresults&hasheaders=y&col=2": {
+    // No results
+    case "http://localhost:3232/searchcsv?searchterm=noresults&hasheaders=y": {
       return {
         result: "success",
         hasheaders: "y",
         searchterm: "noresults",
-        column: "2",
+        column: "null",
         data: []
       };
     }
-    // search hasHeaders is not y or n
+    // hasHeaders is not y or n
     case "http://localhost:3232/searchcsv?searchterm=257&hasheaders=epoerptok&col=2": {
       return {
         result: "error_bad_request",

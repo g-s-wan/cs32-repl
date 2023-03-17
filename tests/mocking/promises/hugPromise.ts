@@ -1,8 +1,13 @@
-import {REPLFunction} from "../../../src/REPL/REPLFunction";
+import {REPLFunction} from "../../../src/frontend/REPL/REPLFunction";
 
+/**
+ * A simple function to test registering non-baseline commands
+ * @param args - string that will determine whether the Promise resolves or rejects
+ */
 export const hugPromise :  REPLFunction = args => {
   return new Promise<string>
   ((resolve, reject) => {
+    // If there is no argument, reject
     if (args[0] === undefined) {
       reject("No hug for you. :(");
     } else {

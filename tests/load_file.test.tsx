@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../src/App";
-import "../styles/App.css";
+import "../src/frontend/styles/App.css";
 
 import {prepareFetchMock} from "./helperSetupMock"
 import jest from "jest-mock";
@@ -13,7 +13,8 @@ describe("load_file command", () => {
   
     test("load_file with no specified filepath gives error", async () => {
       render(<App />);
-  
+
+      // Ensures we don't fail the test because we expected to be in a different mode
       const inputBox = screen.getByRole('input');
       await userEvent.click(inputBox);
       await userEvent.type(inputBox, "mode verbose" );
@@ -41,7 +42,8 @@ describe("load_file command", () => {
       await userEvent.click(inputBox);
       await userEvent.type(inputBox, "load_file " + `${filePath}`);
       await userEvent.click(screen.getByRole('button'));
-  
+
+      // Check for success message
       expect(fetch).toHaveBeenCalledWith('http://localhost:3232/loadcsv?filepath=' + `${filePath}`);
       expect(screen.getByRole("main")).toContainHTML(`Successfully loaded ${filePath}`);
     })
@@ -65,7 +67,8 @@ describe("load_file command", () => {
       await userEvent.click(inputBox);
       await userEvent.type(inputBox, "load_file " + `${filePath}`);
       await userEvent.click(screen.getByRole('button'));
-  
+
+      // Check that error message is as expected
       expect(fetch).toHaveBeenCalledWith('http://localhost:3232/loadcsv?filepath=' + `${filePath}`);
       expect(screen.getByRole("main")).toContainHTML(`An error occurred while loading the file: ${expectedResponse.message}`);
     })
@@ -87,7 +90,8 @@ describe("load_file command", () => {
       await userEvent.click(inputBox);
       await userEvent.type(inputBox, "load_file " + `${filePath}`);
       await userEvent.click(screen.getByRole('button'));
-  
+
+      // Check that error message is as expected
       expect(fetch).toHaveBeenCalledWith('http://localhost:3232/loadcsv?filepath=' + `${filePath}`);
       expect(screen.getByRole("main")).toContainHTML(`An error occurred while loading the file: ${expectedResponse.message}`);
     })

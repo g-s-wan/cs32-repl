@@ -1,13 +1,12 @@
 import { useEffect, useRef} from 'react';
 
-
 interface HistoryBoxProps {
   history: (string|string[])[];
 }
 
 /**
- * Solution that scrolls the History box when new items are added (this ensure that the last elements are 
- * always visible).
+ * Solution that scrolls the History box when new items are added (this ensures that the last, most recently added elements
+ * are always visible).
  */
 const AlwaysScrollToBottom = () => {
 
@@ -27,16 +26,17 @@ const AlwaysScrollToBottom = () => {
 };
 
 /**
- * Component that displays the History
+ * Component that displays the REPL history
  */
 function HistoryBox(props: HistoryBoxProps) {
 
   const history = props.history;
 
   return (
-    <div className="repl-history" role="main">
+      // Loops through the history and creates a div for each entry, along with a separator after
+    <div className="repl-history" role="main" aria-label="repl-history">
       {history.map((item, index) => (
-          <div>
+          <div aria-labelledby="REPL history entry">
              <div key={index} dangerouslySetInnerHTML={{ __html: item.toString() }}/>
              <hr  key={index + history.length}/>
           </div>

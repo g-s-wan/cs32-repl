@@ -13,11 +13,12 @@ export const viewPromise :  REPLFunction = args => {
             fetch("http://localhost:3232/viewcsv")
             .then(response => response.json())
             .then(responseObject => {
+                // Reject if the API returned an error
                 if (responseObject.result.includes("error")) {
                     reject(`An error occurred while viewing the file: ${responseObject.message}`);
                   return;
                 } else {
-
+                // Return CSV contents as a table
                 resolve("Viewing CSV data <br>" +  buildHtmlTable(responseObject.data));
             }})
             .catch((error) => {

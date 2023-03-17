@@ -1,6 +1,6 @@
 import { REPLFunction } from "./REPLFunction";
 import {invalidCommandPromise} from "./promises/invalidCommandPromise"
-import App from "../App";
+import App from "../../App";
 /**
  * Class REPL inspired by Java inspired by the Java REPL livecode from lecture.
  */
@@ -10,7 +10,7 @@ export class REPL {
 
 
     /**
-     * Class constructor created the Map.
+     * Class constructor creates the Map.
      */
     constructor () {
         this.registeredCommands = new Map<string, REPLFunction>();
@@ -24,7 +24,8 @@ export class REPL {
     }
 
     /**
-     * 
+     * Retrieves the given command from the Map and executes it
+     *
      * @param input 
      * @returns 
      */

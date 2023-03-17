@@ -9,7 +9,7 @@ import { REPLFunction } from "../REPLFunction";
 export const loadPromise :  REPLFunction = args => {
     return new Promise<string>
         ((resolve, reject) => {
-
+            // If the user has provided a filepath
             if (args.length > 0) {
                 const filePath = args[0];
 
@@ -17,6 +17,7 @@ export const loadPromise :  REPLFunction = args => {
                   fetch('http://localhost:3232/loadcsv?filepath=' + `${filePath}`)
                     .then(response => response.json())
                     .then(responseObject => {
+                      // Reject if the API returned an error
                       if (responseObject.result.includes("error")) {
                         reject(`An error occurred while loading the file: ${responseObject.message}`);
                         return;
@@ -32,7 +33,7 @@ export const loadPromise :  REPLFunction = args => {
                   reject(ex.message);
                   return;
                 }
-
+            // If there are no arguments, the user forgot to provide a filepath
             }  else {
                 reject("Please include a filepath when using the load_file command.");
                 return;

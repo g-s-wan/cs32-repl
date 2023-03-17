@@ -1,3 +1,7 @@
+/**
+ * Function that converts a CSV (expressed as a 2D array of strings) to an HTML table
+ * @param csvDataset - the CSV that will be turned into an HTML table
+ */
 export function buildHtmlTable(csvDataset: string[][]) {
     // Nothing to do if we provide a null or string parameter
     if ((csvDataset == null) || (typeof(csvDataset) == "string")) {

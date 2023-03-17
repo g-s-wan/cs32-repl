@@ -1,15 +1,16 @@
 import {mockClearFetch} from "../../../tests/mocking/mockClearFetch";
-import {REPLFunction} from "../../../src/REPL/REPLFunction";
+import {REPLFunction} from "../../../src/frontend/REPL/REPLFunction";
 
 /**
- * REPL function to call API for clearing the loaded CSV file.
+ * Mocks a REPL function that calls API for clearing the loaded CSV file.
  *
  * @param args : arguments to the REPL function
- * @returns a Promise that...
+ * @returns a Promise that returns a string to be added to the History window.
  */
 export const mockClearPromise :  REPLFunction = args => {
   return new Promise<string>
   ((resolve, reject) => {
+    // Instead of fetching, grab a mocked JSON
     const responseObject = mockClearFetch("http://localhost:3232/clear");
     if (responseObject.result.includes("error")) {
       reject(`An error occurred while clearing the file: ${responseObject.message}`);
