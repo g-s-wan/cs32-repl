@@ -14,7 +14,7 @@ export const clearPromise :  REPLFunction = args => {
     .then(response => response.json())
     .then(responseObject => {
       if (responseObject.result.includes("error")) {
-        reject(`An error occurred while viewing the file: ${responseObject.message}`);
+        reject(`An error occurred while clearing the loaded CSV file from cache.`);
         return;
       } else {
         resolve("Loaded CSV has been cleared.");

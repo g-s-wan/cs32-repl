@@ -36,7 +36,7 @@ function HistoryBox(props: HistoryBoxProps) {
       {history.map((item, index) => (
           <div>
              <div key={index} dangerouslySetInnerHTML={{ __html: item.toString() }}/>
-              <hr/>
+             <hr  key={index + history.length}/>
           </div>
        ))}
     </div>
