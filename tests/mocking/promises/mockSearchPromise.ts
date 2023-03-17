@@ -10,12 +10,13 @@ export const mockSearchPromise :  REPLFunction = args => {
       let hasHeaders;
       args.length === 2 ? searchTerm = args[0] : searchTerm = args[1];
       args.length === 2 ? hasHeaders = args[1] : hasHeaders = args[2];
+      if (!(hasHeaders === "y") && !(hasHeaders === "n")) {
+        reject("Please double check your parameters. The last argument should be either 'y' or 'n' depending on whether your file has headers.");
+      }
       let responseObject;
       args.length === 3
           ? responseObject = mockSearchFetch("http://localhost:3232/searchcsv" + "?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}` + "&col=" + `${args[0]}`)
           : responseObject = mockSearchFetch("http://localhost:3232/searchcsv" + "?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}`)
-      console.log("AAAAAAAH");
-      console.log(responseObject);
       if (responseObject.result.includes("error")) {
         reject(`An error occurred while searching the file: ${responseObject.message}`);
         return;

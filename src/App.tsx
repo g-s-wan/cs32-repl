@@ -17,15 +17,15 @@ import {mockViewPromise} from "../tests/mocking/promises/mockViewPromise";
 import {mockSearchPromise} from "../tests/mocking/promises/mockSearchPromise";
 import {mockClearPromise} from "../tests/mocking/promises/mockClearPromise";
 
-function App() {
+function App(repl: REPL) {
 
   const [history, setHistory] = useState<(string | string[])[]>([]);
   const [text, setText] = useState("");
   const [fullCommand, setFullCommand] = useState("");
   const [outputStatus, setOutputStatus] = useState("");
   const [histEntry, setHistEntry] = useState("");
-  
-  const repl = new REPL();
+
+  repl = new REPL();
   repl.registerCommand("mode", modePromise);
   repl.registerCommand("load_file", loadPromise);
   repl.registerCommand("view", viewPromise);

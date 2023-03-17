@@ -1,6 +1,7 @@
 h1 {
   color: #EFE6DD;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
+  font-size: clamp(16px, 3vw, 32px);
 }
 
 #root {
@@ -21,11 +22,11 @@ h1 {
 }
 
 .repl-history {
-  height: calc(100% - 60px);
+  height: 90%;
+  vertical-align: top;
   margin: auto;
   display: block;
   width: 100%;
-  bottom: 60px;
   position: relative;
   overflow: scroll;
   background-color: #EFE6DD;
@@ -34,20 +35,20 @@ h1 {
 }
 
 .repl-input {
-  position: absolute;
-  bottom: 1px;
-  margin: 1vh auto;
+  position: sticky;
+  bottom: 0;
   width: 95%;
-  height: 60px !important;
+  height: 15vh;
   background-color: #2B303A;
   display: flex;
   overflow: hidden;
 }
 
 .repl-command-box {
-width: 70%;
-margin: auto;
-margin-left: 10px;
+  height: 5vh;
+  width: 70%;
+  margin: auto;
+  margin-left: 10px;
 
 }
 
@@ -124,5 +125,15 @@ table, th, td {
   width: 100%;
   height: 100%;
   align-items: stretch;
+}
 
+.repl-button {
+  margin: 5px;
+  padding: 3px;
+  height: 30px;
+  width: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(10px, 3vw, 20px);
 }

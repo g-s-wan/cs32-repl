@@ -32,7 +32,7 @@ function HistoryBox(props: HistoryBoxProps) {
   const alternatingColor = ['#d5d5d5', '#a9a9a9'];
 
   return (
-    <div className="repl-history" role="history">
+    <div className="repl-history" role="main">
       {history.map((item, index) => (
           <div>
              <div key={index} dangerouslySetInnerHTML={{ __html: item.toString() }}/>

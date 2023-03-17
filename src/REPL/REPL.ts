@@ -1,5 +1,6 @@
 import { REPLFunction } from "./REPLFunction";
 import {invalidCommandPromise} from "./promises/invalidCommandPromise"
+import App from "../App";
 /**
  * Class REPL inspired by Java inspired by the Java REPL livecode from lecture.
  */

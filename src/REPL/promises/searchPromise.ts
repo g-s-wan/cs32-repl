@@ -13,11 +13,17 @@ export const searchPromise :  REPLFunction = args => {
     return new Promise<string>
         ((resolve, reject) => {
             if (args.length >= 2) {
-                const col = args[0];
-                const searchTerm = args[1];
-                const hasHeaders =  (args.length >= 3)? args[2]: "y";
-
-                fetch("http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}`  + "&col=" + `${col}` + "&hasheaders="+ `${hasHeaders}`)
+                let searchTerm;
+                let hasHeaders;
+                args.length === 2 ? searchTerm = args[0] : searchTerm = args[1];
+                args.length === 2 ? hasHeaders = args[1] : hasHeaders = args[2];
+                if (!(hasHeaders === "y") && !(hasHeaders === "n")) {
+                  reject("Please double check your parameters. The last argument should be either 'y' or 'n' depending on whether your file has headers.");
+                }
+                fetch(args.length === 3
+                    ? "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}` + "&col=" + `${args[0]}`
+                    : "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}`
+                )
                 .then(response => response.json())
                 .then(responseObject => {
                     if (responseObject.result.includes("error")) {

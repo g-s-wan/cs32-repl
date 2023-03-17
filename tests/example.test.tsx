@@ -1,13 +1,11 @@
 import "@testing-library/jest-dom";
-import jest from "jest";
-import { render, screen } from "@testing-library/react";
+import {getByText, render, screen} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Header from "../src/components/Header";
-import React, {useState, useEffect, useCallback, useRef} from "react";
-import HistoryBox from "../src/components/HistoryBox";
-import InputBox from "../src/components/InputBox";
+import React from "react";
 import App from "../src/App";
 import "../styles/App.css";
+import { REPL } from "../src/REPL/REPL";
+import {hugPromise} from "./mocking/promises/hugPromise";
 
 /*
  * This is an example test file.
@@ -29,10 +27,10 @@ async function prepareLoad(filePath: string) {
 // todo: update when aria-labels are in
 describe("core elements render", () => {
   test("overall page render", async () => {
-    render(<App />)
+    render(<App repl={new REPL()}/>)
     expect(screen.getByText(/REPL/i)).toBeInTheDocument();
     expect(screen.getByRole("heading")).toBeInTheDocument();
-
+    expect(screen.getByRole("main")).toBeInTheDocument();
     expect(screen.getByText("Submit")).toBeInTheDocument();
     expect(screen.getByRole("button")).toBeInTheDocument();
   })
@@ -171,23 +169,74 @@ describe("searching works as expected", () => {
   })
 
   test("search before load", async () => {
+    render(<App/>);
+    let searchTerm = "beforeload";
+    let hasHeaders = "y";
+    const inputBox = screen.getByRole('input');
 
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mock_search " + `${searchTerm}` + ` ${hasHeaders}`);
+    await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByText(`${genericSearchError}` + "No CSV file has been loaded yet.")).toBeInTheDocument();
   })
 
   test("search nonexistent column index/name", async() => {
+    render(<App/>);
+    const searchTerm = "Merigh";
+    const hasHeaders = "y";
+    const col = "eu49ueriyli";
+    const inputBox = screen.getByRole('input');
+
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mock_search " + `${col} ` + `${searchTerm}` + ` ${hasHeaders}`);
+    await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByText(`${genericSearchError}` + "Invalid header name or column index. Did you make a typo?")).toBeInTheDocument();
 
   })
 
+  // todo: improve this test?
   test("search incorrect number of parameters", async() => {
+    render(<App/>);
+    const searchTerm = "Merigh";
+    const col = "0";
+    const inputBox = screen.getByRole('input');
 
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mock_search " + `${col} ` + `${searchTerm}`);
+    await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByText("Please double check your parameters. The last argument should be either 'y' or 'n' depending on whether your file has headers.")).toBeInTheDocument();
   })
 
   test("search no results", async() => {
+    render(<App/>);
+    const searchTerm = "noresults";
+    const hasHeaders = "y";
+    const col = "2";
+    const inputBox = screen.getByRole('input');
+
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mock_search " + `${col} ` + `${searchTerm} ` + `${hasHeaders}`);
+    await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByText("No results found")).toBeInTheDocument();
 
   })
 
   test("search hasHeaders is not y or n", async() => {
+    render(<App/>);
+    const searchTerm = "257";
+    const hasHeaders = "epoerptok";
+    const col = "2";
+    const inputBox = screen.getByRole('input');
 
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mock_search " + `${col} ` + `${searchTerm} ` + `${hasHeaders}`);
+    await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByText("Please double check your parameters. The last argument should be either 'y' or 'n' depending on whether your file has headers.")).toBeInTheDocument();
   })
 }
 )
@@ -226,5 +275,28 @@ describe("clearing works as expected", () => {
     await userEvent.type(inputBox, "mock_clear");
     await userEvent.click(screen.getByText('Submit'));
     expect(screen.getByText("Loaded CSV has been cleared.")).toBeInTheDocument();
+  })
+})
+
+describe("registering is functional", () => {
+  test("successful register", async () => {
+    render(<App/>)
+
+    const repl = new REPL();
+    repl.registerCommand("hug", hugPromise);
+    console.log(repl.registeredCommands);
+
+    const inputBox = screen.getByRole('input');
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "hug");
+    await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByText("No hug for you. :(")).toBeInTheDocument();
+
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "hug you");
+    await userEvent.click(screen.getByText('Submit'));
+
+    expect(screen.getByText("Giving you a big hug!")).toBeInTheDocument();
   })
 })

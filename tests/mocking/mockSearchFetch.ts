@@ -61,7 +61,7 @@ export function mockSearchFetch(url: URL | RequestInfo): searchResponse {
         hasheaders: "y",
         searchterm: "noresults",
         column: "2",
-        data: [[]]
+        data: []
       };
     }
     // search hasHeaders is not y or n
