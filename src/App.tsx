@@ -17,7 +17,7 @@ import {mockViewPromise} from "../tests/mocking/promises/mockViewPromise";
 import {mockSearchPromise} from "../tests/mocking/promises/mockSearchPromise";
 import {mockClearPromise} from "../tests/mocking/promises/mockClearPromise";
 
-function App(repl: REPL) {
+function App() {
 
   const [history, setHistory] = useState<(string | string[])[]>([]);
   const [text, setText] = useState("");
@@ -25,7 +25,7 @@ function App(repl: REPL) {
   const [outputStatus, setOutputStatus] = useState("");
   const [histEntry, setHistEntry] = useState("");
 
-  repl = new REPL();
+  const repl = new REPL();
   repl.registerCommand("mode", modePromise);
   repl.registerCommand("load_file", loadPromise);
   repl.registerCommand("view", viewPromise);
@@ -59,7 +59,7 @@ function App(repl: REPL) {
   }, [histEntry]);
 
   /**
-   * 
+   *
    */
   function handleCommand() {
 
@@ -67,9 +67,9 @@ function App(repl: REPL) {
   }
 
   /**
-   * 
-   * @param command 
-   * @returns 
+   *
+   * @param command
+   * @returns
    */
   function executeCommand(command: string) {
         // Store the full command (user input) since it gets cleared somewhere else.
@@ -78,15 +78,15 @@ function App(repl: REPL) {
         // Do nothing if the user did not provide a command
         if (command.length == 0)
           return;
-    
+
         try {
           repl.executeCommand(command)
             .then ( (response) => { setHistEntry(response);            setOutputStatus("Output: ");})
-            .catch( (err)      => { setHistEntry(err.toString());      setOutputStatus("Output: (Error) "); })
-    
+            .catch( (err)      => { setHistEntry(err.toString());      setOutputStatus("Output (Error):  "); })
+
         } catch(error) {
           setHistEntry(`Error executing command: ${error}`);
-          setOutputStatus("Output: (Error) ");
+          setOutputStatus("Output (Error): ");
         }
   }
 

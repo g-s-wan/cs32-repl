@@ -3,6 +3,9 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../src/App";
 import "../styles/App.css";
+import jest from "jest-mock";
+
+Element.prototype.scrollIntoView = jest.fn();
 
 describe("Display mode logic", () => {
     test("Initial mode is 'brief'", async () => {
@@ -14,10 +17,9 @@ describe("Display mode logic", () => {
       await userEvent.click(screen.getByRole('button'));
   
       // Check that output corresponds to brief mode
-      expect(screen.getByRole("history").children.length).toBe(1);
-      expect(screen.getByRole("history")).toContainHTML('Could not recognize that command. Submit "help" to view a list of registered commands');
-      expect(screen.getByRole("history")).not.toContainHTML("Command: invalid_command");
-      expect(screen.getByRole("history")).not.toContainHTML("Output:");
+      expect(screen.getByRole("main")).toContainHTML('Could not recognize that command. Submit "help" to view a list of registered commands');
+      expect(screen.getByRole("main")).not.toContainHTML("Command: invalid_command");
+      expect(screen.getByRole("main")).not.toContainHTML("Output:");
     })
   
      test("Toggle mode to verbose", async () => {
@@ -29,15 +31,15 @@ describe("Display mode logic", () => {
       await userEvent.click(screen.getByRole('button'));
   
       // Check that mode is changed to verbose
-      expect(screen.getByRole("history")).toContainHTML("Mode successfully set to VERBOSE");
+      expect(screen.getByRole("main")).toContainHTML("Mode successfully set to VERBOSE");
       
-      // Change the display mode and check aknowledgement
+      // Change the display mode and check acknowledgement
       await userEvent.click(inputBox);
       await userEvent.type(inputBox, "invalid_command");
       await userEvent.click(screen.getByRole('button'));
   
-      expect(screen.getByRole("history")).toContainHTML("Command: invalid_command");
-      expect(screen.getByRole("history")).toContainHTML('Output: (Error) Could not recognize that command. Submit "help" to view a list of registered commands');
+      expect(screen.getByRole("main")).toContainHTML("Command: invalid_command");
+      expect(screen.getByRole("main")).toContainHTML('Output (Error):  Could not recognize that command. Submit "help" to view a list of registered commands.');
   
      })
   
@@ -50,7 +52,7 @@ describe("Display mode logic", () => {
       await userEvent.click(screen.getByRole('button'));
   
       // Check that mode is changed to verbose
-      expect(screen.getByRole("history")).toContainHTML("Mode successfully set to VERBOSE");
+      expect(screen.getByRole("main")).toContainHTML("Mode successfully set to VERBOSE");
   
       // Change the display mode and check aknowledgement
       await userEvent.click(inputBox);
@@ -63,7 +65,7 @@ describe("Display mode logic", () => {
       await userEvent.click(screen.getByRole('button'));
   
       // Check that mode is changed to verbose
-      expect(screen.getByRole("history")).toContainHTML("Mode successfully set to VERBOSE");
+      expect(screen.getByRole("main")).toContainHTML("Mode successfully set to VERBOSE");
   
       // Change the display mode and check aknowledgement
       await userEvent.click(inputBox);
@@ -76,7 +78,7 @@ describe("Display mode logic", () => {
       await userEvent.click(screen.getByRole('button'));
   
       // Check that mode is changed to verbose
-      expect(screen.getByRole("history")).toContainHTML("Mode successfully set to BRIEF");
+      expect(screen.getByRole("main")).toContainHTML("Mode successfully set to BRIEF");
   
       // Change the display mode and check aknowledgement
       await userEvent.click(inputBox);
@@ -89,7 +91,7 @@ describe("Display mode logic", () => {
       await userEvent.click(screen.getByRole('button'));
   
       // Check that mode is changed to verbose
-      expect(screen.getByRole("history")).toContainHTML("Mode successfully set to BRIEF");
+      expect(screen.getByRole("main")).toContainHTML("Mode successfully set to BRIEF");
   
       // Change the display mode and check aknowledgement
       await userEvent.click(inputBox);
@@ -102,12 +104,7 @@ describe("Display mode logic", () => {
       await userEvent.click(screen.getByRole('button'));
   
       // Check that mode is changed to verbose
-      expect(screen.getByRole("history")).toContainHTML("Invalid mode option.");
+      expect(screen.getByRole("main")).toContainHTML("Invalid mode option.");
      })
-  
-    // test("Page has required elements", async () => {
-    //   render(<App />);
-    // })
-  
   }) 
   

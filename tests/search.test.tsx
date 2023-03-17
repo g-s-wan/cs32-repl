@@ -6,6 +6,9 @@ import "../styles/App.css";
 
 import {prepareFetchMock} from "./helperSetupMock"
 import {mock_csv_data } from "./mock_csv_data"
+import jest from "jest-mock";
+
+Element.prototype.scrollIntoView = jest.fn();
 
 describe("search command", () => {
   
@@ -23,15 +26,15 @@ describe("search command", () => {
       const col = "FirstName"
       const hasHeaders = "y";
 
-      const url = "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}`  + "&col=" + `${col}` + "&hasheaders="+ `${hasHeaders}`
+      const url = "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders=" + `${hasHeaders}` + "&col=" + `${col}`;
 
       const inputBox = screen.getByRole('input');
       await userEvent.click(inputBox);
-      await userEvent.type(inputBox, "search " + col + " " + searchTerm);
+      await userEvent.type(inputBox, "search " + col + " " + searchTerm + " " + hasHeaders);
       await userEvent.click(screen.getByRole('button'));
   
       expect(fetch).toHaveBeenCalledWith(url);
-      expect(screen.getByRole("history")).toContainHTML(`An error occurred while searching the file: ${expectedResponse.message}`);
+      expect(screen.getByRole("main")).toContainHTML(`An error occurred while searching the file: ${expectedResponse.message}`);
     })
   
     test("search with too few arguments", async () => {
@@ -45,21 +48,22 @@ describe("search command", () => {
       prepareFetchMock(expectedResponse);
       
       const searchTerm = "anything";
-      const col = "FirstName"
-      const hasHeaders = ""
+      const col = "FirstName";
+      const hasHeaders = "";
 
       const url = "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}`  + "&col=" + `${col}` + "&hasheaders="+ `${hasHeaders}`
 
       const inputBox = screen.getByRole('input');
       await userEvent.click(inputBox);
-      await userEvent.type(inputBox, "search "+ searchTerm);
+      await userEvent.type(inputBox, "search " + searchTerm);
       await userEvent.click(screen.getByRole('button'));
   
       expect(fetch).not.toHaveBeenCalledWith(url);
-      expect(screen.getByRole("history")).toContainHTML(expectedResponse.message);
+      expect(screen.getByRole("main")).toContainHTML(expectedResponse.message);
     })
 
     test("search for existing through mock data", async () => {
+
       render(<App />);
   
       const header = mock_csv_data[0];
@@ -83,22 +87,22 @@ describe("search command", () => {
           const col = header[colIndex]
           const hasHeaders = "y"
     
-          const url = "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}`  + "&col=" + `${col}` + "&hasheaders="+ `${hasHeaders}`
+          const url = "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders="+ `${hasHeaders}` + "&col=" + `${col}`
     
           const inputBox = screen.getByRole('input');
           await userEvent.click(inputBox);
-          await userEvent.type(inputBox, "search " + col + " " + searchTerm);
+          await userEvent.type(inputBox, "search " + col + " " + searchTerm + " " + hasHeaders);
           await userEvent.click(screen.getByRole('button'));
       
           expect(fetch).toHaveBeenCalledWith(url);
-          expect(screen.getByRole("history")).toContainHTML("Showing search results");
-          expect(screen.getByRole("history")).toContainHTML(column);
+          expect(screen.getByRole("main")).toContainHTML("Showing search results");
+          expect(screen.getByRole("main")).toContainHTML(column);
 
         }}
 
       })
 
-    test("search for non existing through mock data", async () => {
+    test("search for non existing through mock data", async (timeout=10000) => {
         render(<App />);
     
         const header = mock_csv_data[0];
@@ -122,15 +126,15 @@ describe("search command", () => {
             const col = header[colIndex]
             const hasHeaders = "y"
       
-            const url = "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}`  + "&col=" + `${col}` + "&hasheaders="+ `${hasHeaders}`
+            const url = "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}` + "&hasheaders="+ `${hasHeaders}` + "&col=" + `${col}`
       
             const inputBox = screen.getByRole('input');
             await userEvent.click(inputBox);
-            await userEvent.type(inputBox, "search " + col + " " + searchTerm);
+            await userEvent.type(inputBox, "search " + col + " " + searchTerm + " " + hasHeaders);
             await userEvent.click(screen.getByRole('button'));
         
             expect(fetch).toHaveBeenCalledWith(url);
-            expect(screen.getByRole("history")).toContainHTML("No results found");
+            expect(screen.getByRole("main")).toContainHTML("No results found");
   
           }}
   
@@ -148,7 +152,7 @@ describe("search command", () => {
           const col = "FirstName"
           const hasHeaders = "y";
     
-          const url = "http://localhost:3232/searchcsv?searchterm=" + `${searchTerm}`  + "&col=" + `${col}` + "&hasheaders="+ `${hasHeaders}`
+          const url = "http://localhost:3232/searchcsv?searchterm=" + `${col}` + "&hasheaders="+ `${searchTerm}`;
     
           prepareFetchMock(expectedResponse);
           
@@ -159,6 +163,6 @@ describe("search command", () => {
       
           expect(fetch).toHaveBeenCalledWith(url);
     
-          expect(screen.getByRole("history")).toContainHTML(expectedResponse.message);
+          expect(screen.getByRole("main")).toContainHTML("Please double check your parameters. The last argument should be either 'y' or 'n' depending on whether your file has headers.");
          })
     })

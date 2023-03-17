@@ -46,7 +46,7 @@ export const helpPromise :  REPLFunction = args => {
             + "</tr>" 
             + "<tr>" 
             +    "<td>search <b> [column index or name] </b> <b>text-item</b>  [y | n]</td>"
-            +     "<td>searches for text item.  Use y or no to indicate if the dataset includes a header.  Optionally, specify a column index to limit the search to.</td>"
+            +     "<td>searches for text item.  Use y or n to indicate if the dataset includes a header.  Optionally, specify a column index to limit the search to.</td>"
             + "</tr>" 
 
             + "</table>" 

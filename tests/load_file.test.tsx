@@ -5,24 +5,26 @@ import App from "../src/App";
 import "../styles/App.css";
 
 import {prepareFetchMock} from "./helperSetupMock"
+import jest from "jest-mock";
+
+Element.prototype.scrollIntoView = jest.fn();
 
 describe("load_file command", () => {
   
-    test("load_file with no specied filepath gives error", async () => {
+    test("load_file with no specified filepath gives error", async () => {
       render(<App />);
   
       const inputBox = screen.getByRole('input');
       await userEvent.click(inputBox);
       await userEvent.type(inputBox, "mode verbose" );
       await userEvent.click(screen.getByRole('button'));
-  
-      const filePath = 'data/testFile';
+
       await userEvent.click(inputBox);
-      await userEvent.type(inputBox, "load_file" );
+      await userEvent.type(inputBox, "load_file");
       await userEvent.click(screen.getByRole('button'));
   
-      expect(screen.getByRole("history")).toContainHTML("Command: load_file");
-      expect(screen.getByRole("history")).toContainHTML("Output: (Error) Please include a filepath when using the load_file command.");
+      expect(screen.getByRole("main")).toContainHTML("Command: load_file");
+      expect(screen.getByRole("main")).toContainHTML("Output (Error):  Please include a filepath when using the load_file command.");
     })
   
     test("successful load_file", async () => {
@@ -41,7 +43,7 @@ describe("load_file command", () => {
       await userEvent.click(screen.getByRole('button'));
   
       expect(fetch).toHaveBeenCalledWith('http://localhost:3232/loadcsv?filepath=' + `${filePath}`);
-      expect(screen.getByRole("history")).toContainHTML(`Successfully loaded ${filePath}`);
+      expect(screen.getByRole("main")).toContainHTML(`Successfully loaded ${filePath}`);
     })
   
     test("load_file: file not in ./data subfolder", async () => {
@@ -65,7 +67,7 @@ describe("load_file command", () => {
       await userEvent.click(screen.getByRole('button'));
   
       expect(fetch).toHaveBeenCalledWith('http://localhost:3232/loadcsv?filepath=' + `${filePath}`);
-      expect(screen.getByRole("history")).toContainHTML(`An error occurred while loading the file: ${expectedResponse.message}`);
+      expect(screen.getByRole("main")).toContainHTML(`An error occurred while loading the file: ${expectedResponse.message}`);
     })
   
     test("load_file: file does not exist", async () => {
@@ -87,6 +89,6 @@ describe("load_file command", () => {
       await userEvent.click(screen.getByRole('button'));
   
       expect(fetch).toHaveBeenCalledWith('http://localhost:3232/loadcsv?filepath=' + `${filePath}`);
-      expect(screen.getByRole("history")).toContainHTML(`An error occurred while loading the file: ${expectedResponse.message}`);
+      expect(screen.getByRole("main")).toContainHTML(`An error occurred while loading the file: ${expectedResponse.message}`);
     })
    })

@@ -6,6 +6,9 @@ import "../styles/App.css";
 
 import {prepareFetchMock} from "./helperSetupMock"
 import {mock_csv_data } from "./mock_csv_data"
+import jest from "jest-mock";
+
+Element.prototype.scrollIntoView = jest.fn();
 
 describe("view command", () => {
   
@@ -25,7 +28,7 @@ describe("view command", () => {
       await userEvent.click(screen.getByRole('button'));
   
       expect(fetch).toHaveBeenCalledWith('http://localhost:3232/viewcsv');
-      expect(screen.getByRole("history")).toContainHTML(`An error occurred while viewing the file: ${expectedResponse.message}`);
+      expect(screen.getByRole("main")).toContainHTML(`An error occurred while viewing the file: ${expectedResponse.message}`);
     })
   
     test("view after csv file loaded", async () => {
@@ -47,7 +50,7 @@ describe("view command", () => {
 
       mock_csv_data.forEach( row => {
         row.forEach(col => {
-          expect(screen.getByRole("history")).toContainHTML(col);
+          expect(screen.getByRole("main")).toContainHTML(col);
         })
       })
      })
@@ -69,7 +72,7 @@ describe("view command", () => {
   
       expect(fetch).toHaveBeenCalledWith('http://localhost:3232/viewcsv');
 
-      expect(screen.getByRole("history")).toContainHTML(expectedResponse.message);
+      expect(screen.getByRole("main")).toContainHTML(expectedResponse.message);
 
      })
 

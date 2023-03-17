@@ -23,7 +23,7 @@ export default function InputBox(props: InputBoxProps) {
   }
 
   return (
-    <div className="repl-input">
+    <div className="repl-input repl-center">
       <input
         role= "input"
         type="text"
