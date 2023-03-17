@@ -30,6 +30,7 @@ The source code includes:
 - As stated above, each file in the ./src/REPL/promises directory corresponds to a REPLFunction that handles part of the command-processor functionality.
 - We have implemented shortcuts for all commands mentioned in the assignment specs, as well as for clearing the history and displaying a table describing baseline commands.
 - If the content in the REPL history exceeds the size of the div, we automatically scroll down to the most recent entry.
+- We used Narrator on Windows to test screen reader functionality.
 
 # User Story 1: (End user stakeholder)
 
@@ -68,6 +69,7 @@ The source code includes:
 * Because we are reusing backend code, the limitations of that code still apply. 
   * For example, we require users to input their arguments in a specific order and require them to tell us whether their file has headers or not.
 * Requiring the addition of a new file for each new command could lead to a very large codebase.
+* Scrolling without the trackpad is difficult, but we hope that automatically scrolling to the bottom of the REPL history alleviates this.
 * No known bugs.
 
 **Tests:**
