@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom";
-import {getByText, render, screen} from "@testing-library/react";
+import { render, screen, waitFor} from "@testing-library/react";
+import { act } from 'react-dom/test-utils';
 import jest from "jest-mock";
 import userEvent from "@testing-library/user-event";
 import React from "react";
@@ -9,18 +10,19 @@ import { REPL } from "../src/frontend/REPL/REPL";
 import {hugPromise} from "./mocking/promises/hugPromise"
 import {sleepPromise} from "./mocking/promises/sleepPromise";
 
-/*
- * This is an example test file.
- * It is meant to be a starting point for writing your own tests.
- * Feel free to research all the other functions that Jest and Testing Library provide!
+/**
+ * Test suite for the command-processor
  */
 
+// General errors
 const genericLoadError = "An error occurred while loading the file: ";
 const genericSearchError = "An error occurred while searching the file: ";
 const genericViewError = "An error occurred while viewing the file: ";
 
+// Tests will fail if we don't mock automatic scrolling
 Element.prototype.scrollIntoView = jest.fn();
 
+// Helper function that (mock) loads a file
 async function prepareLoad(filePath: string) {
   const inputBox = screen.getByRole('input');
   await userEvent.click(inputBox);
@@ -28,10 +30,10 @@ async function prepareLoad(filePath: string) {
   await userEvent.click(screen.getByRole('button'));
 }
 
-// todo: update when aria-labels are in
 describe("core elements render", () => {
   test("overall page render", async () => {
     render(<App />)
+    // Core elements are on the page
     expect(screen.getByRole("header")).toBeInTheDocument();
     expect(screen.getByRole("main")).toBeInTheDocument();
     expect(screen.getByRole("button")).toBeInTheDocument();
@@ -48,7 +50,7 @@ describe("viewing works as expected", () => {
     await userEvent.type(inputBox, "mock_view beforeload");
     await userEvent.click(screen.getByRole('button'));
 
-    expect(screen.getByText(`${genericViewError}` + "No CSV file has been loaded yet.")).toBeInTheDocument();
+    expect(screen.getByRole("main")).toContainHTML(`${genericViewError}` + "No CSV file has been loaded yet.");
   })
 
   test("successful view", async () => {
@@ -62,11 +64,13 @@ describe("viewing works as expected", () => {
     await userEvent.type(inputBox, "mock_view");
     await userEvent.click(screen.getByRole('button'));
 
+    // Test at least one value from each row and column
+    // Calling expect() on EVERY cell could be expensive for large CSVs
     expect(screen.getByRole("table")).toBeInTheDocument();
-    expect(screen.getByText("FirstName")).toBeInTheDocument();
-    expect(screen.getByText("Merigh")).toBeInTheDocument();
-    expect(screen.getByText("257")).toBeInTheDocument();
-
+    expect(screen.getByRole("table")).toContainHTML("FirstName");
+    expect(screen.getByRole("table")).toContainHTML("Merigh");
+    expect(screen.getByRole("table")).toContainHTML("257");
+    expect(screen.getByRole("table")).toContainHTML("Offcampus");
   })
 
   test("load view load view", async () => {
@@ -78,11 +82,13 @@ describe("viewing works as expected", () => {
     await userEvent.click(inputBox);
     await userEvent.type(inputBox, "mock_view");
     await userEvent.click(screen.getByRole('button'));
-
+    
+    // Test at least one value from each row and column
+    // Calling expect() on EVERY cell could be expensive for large CSVs
     expect(screen.getByRole("table")).toBeInTheDocument();
-    expect(screen.getByText("FirstName")).toBeInTheDocument();
-    expect(screen.getByText("Merigh")).toBeInTheDocument();
-    expect(screen.getByText("257")).toBeInTheDocument();
+    expect(screen.getByRole("table")).toContainHTML("FirstName");
+    expect(screen.getByRole("table")).toContainHTML("Merigh");
+    expect(screen.getByRole("table")).toContainHTML("257");
 
     filePath = 'data/testFile2'
     await prepareLoad(filePath);
@@ -90,17 +96,17 @@ describe("viewing works as expected", () => {
     await userEvent.type(inputBox, "mock_view 2");
     await userEvent.click(screen.getByRole('button'));
 
-    // todo: get tables by accessibiltiy label?
     // Expect old table to still be in the DOM
-    expect(screen.getAllByText("LastName")[0]).toBeInTheDocument();
-    expect(screen.getByText("Li")).toBeInTheDocument();
-    expect(screen.getByText("Safae")).toBeInTheDocument();
+    expect(screen.getAllByRole("table")[0]).toBeInTheDocument();
+    expect(screen.getAllByRole("table")[0]).toContainHTML("Li");
+    expect(screen.getAllByRole("table")[0]).toContainHTML("Safae");
 
     // Expect new table to be in the DOM
-    expect(screen.getByText("Tom")).toBeInTheDocument();
-    expect(screen.getByText("Fisler")).toBeInTheDocument();
-    expect(screen.getByText("RhodeIsland")).toBeInTheDocument();
-    expect(screen.getByText("Nowhere")).toBeInTheDocument();
+    expect(screen.getAllByRole("table")[1]).toBeInTheDocument();
+    expect(screen.getAllByRole("table")[1]).toContainHTML("Tom");
+    expect(screen.getAllByRole("table")[1]).toContainHTML("Fisler");
+    expect(screen.getAllByRole("table")[1]).toContainHTML("RhodeIsland");
+    expect(screen.getAllByRole("table")[1]).toContainHTML("Nowhere");
   })
 })
 
@@ -110,14 +116,14 @@ describe("loading works as expected", () => {
     const filePath = "data/testFile";
     await prepareLoad("data/testFile")
 
-    expect(screen.getByText("Successfully loaded " + `${filePath}`)).toBeInTheDocument();
+    expect(screen.getByRole("main")).toContainHTML("Successfully loaded " + `${filePath}`);     
   })
 
   test("loading without filepath", async () => {
     render(<App />);
     await prepareLoad("")
 
-    expect(screen.getByText("Please include a filepath when using the load_file command.")).toBeInTheDocument();
+    expect(screen.getByRole("main")).toContainHTML("Please include a filepath when using the load_file command.");
   })
 
   test("loading nonexistent file", async () => {
@@ -125,7 +131,7 @@ describe("loading works as expected", () => {
     const filePath = "data/drijleijrlyij";
     await prepareLoad(filePath);
 
-    expect(screen.getByText(`${genericLoadError}` + "Could not find a file associated with the provided filepath. Did you make a typo?")).toBeInTheDocument();
+    expect(screen.getByRole("main")).toContainHTML(`${genericLoadError}` + "Could not find a file associated with the provided filepath. Did you make a typo?");
   })
 
   test("loading file outside of permitted directory", async () => {
@@ -134,9 +140,9 @@ describe("loading works as expected", () => {
     const permittedPath = "./data";
     await prepareLoad(filePath);
 
-    expect(screen.getByText(`${genericLoadError}` +
+    expect(screen.getByRole("main")).toContainHTML(`${genericLoadError}` +
         "File access denied. You tried to access " + `${filePath}` + " but only files in " + `${permittedPath}` + " are permitted."
-    )).toBeInTheDocument();
+    )
   })
 })
 
@@ -155,11 +161,12 @@ describe("searching works as expected", () => {
     await userEvent.type(inputBox, "mock_search " + `${col}` + ` ${searchTerm}` + ` ${hasHeaders}`);
     await userEvent.click(screen.getByRole('button'));
 
-    expect(screen.getByText("Showing search results")).toBeInTheDocument();
+    expect(screen.getByRole("main")).toContainHTML("Showing search results");
     expect(screen.getByRole("cell")).toBeInTheDocument();
     expect(screen.getByRole("cell").innerHTML).toEqual("Cindy,Li,257");
     expect(screen.getByRole("table")).toBeInTheDocument();
 
+    // Second search just to be safe
     searchTerm = "Merigh";
     hasHeaders = "n";
     await userEvent.click(inputBox);
@@ -181,7 +188,7 @@ describe("searching works as expected", () => {
     await userEvent.type(inputBox, "mock_search " + `${searchTerm}` + ` ${hasHeaders}`);
     await userEvent.click(screen.getByRole('button'));
 
-    expect(screen.getByText(`${genericSearchError}` + "No CSV file has been loaded yet.")).toBeInTheDocument();
+    expect(screen.getByRole("main")).toContainHTML(`${genericSearchError}` + "No CSV file has been loaded yet.");
   })
 
   test("search nonexistent column index/name", async() => {
@@ -195,11 +202,10 @@ describe("searching works as expected", () => {
     await userEvent.type(inputBox, "mock_search " + `${col} ` + `${searchTerm}` + ` ${hasHeaders}`);
     await userEvent.click(screen.getByRole('button'));
 
-    expect(screen.getByText(`${genericSearchError}` + "Invalid header name or column index. Did you make a typo?")).toBeInTheDocument();
+    expect(screen.getByRole("main")).toContainHTML(`${genericSearchError}` + "Invalid header name or column index. Did you make a typo?");
 
   })
 
-  // todo: improve this test?
   test("search incorrect number of parameters", async() => {
     render(<App/>);
     const searchTerm = "Merigh";
@@ -210,7 +216,7 @@ describe("searching works as expected", () => {
     await userEvent.type(inputBox, "mock_search " + `${col} ` + `${searchTerm}`);
     await userEvent.click(screen.getByRole('button'));
 
-    expect(screen.getByText("Please double check your parameters. The last argument should be either 'y' or 'n' depending on whether your file has headers.")).toBeInTheDocument();
+    expect(screen.getByRole("main")).toContainHTML("Please double check your parameters. The last argument should be either 'y' or 'n' depending on whether your file has headers.");
   })
 
   test("search no results", async() => {
@@ -223,7 +229,6 @@ describe("searching works as expected", () => {
     await userEvent.type(inputBox, "mock_search " + `${searchTerm} ` + `${hasHeaders}`);
     await userEvent.click(screen.getByRole('button'));
 
-    expect(screen.getByText("No results found")).toBeInTheDocument();
     expect(screen.getByRole("main")).toContainHTML("No results found");
   })
 
@@ -238,7 +243,7 @@ describe("searching works as expected", () => {
     await userEvent.type(inputBox, "mock_search " + `${col} ` + `${searchTerm} ` + `${hasHeaders}`);
     await userEvent.click(screen.getByRole('button'));
 
-    expect(screen.getByText("Please double check your parameters. The last argument should be either 'y' or 'n' depending on whether your file has headers.")).toBeInTheDocument();
+    expect(screen.getByRole("main")).toContainHTML("Please double check your parameters. The last argument should be either 'y' or 'n' depending on whether your file has headers.");  
   })
 }
 )
@@ -251,21 +256,21 @@ describe("mode works as expected", () => {
     await userEvent.type(inputBox, "mode");
     await userEvent.click(screen.getByRole('button'));
 
-    expect(screen.getByText("Command: mode" + "Output: Mode successfully set to VERBOSE")).toBeInTheDocument();
-
+    expect(screen.getByRole("main")).toContainHTML("Command: mode");
+    expect(screen.getByRole("main")).toContainHTML("Output: Mode successfully set to VERBOSE");
   })
 
   test("verbose to brief", async () => {
     render(<App />);
     const inputBox = screen.getByRole('input');
     await userEvent.click(inputBox);
-    await userEvent.type(inputBox, "mode");
+    await userEvent.type(inputBox, "mode VERBOSE");
     await userEvent.click(screen.getByRole('button'));
     await userEvent.click(inputBox);
     await userEvent.type(inputBox, "mode");
     await userEvent.click(screen.getByRole('button'));
 
-    expect(screen.getByText("Mode successfully set to BRIEF")).toBeInTheDocument();
+    expect(screen.getByRole("main")).toContainHTML("Mode successfully set to BRIEF");
   })
 })
 
@@ -280,7 +285,7 @@ describe("clearing works as expected", () => {
     await userEvent.click(inputBox);
     await userEvent.type(inputBox, "mock_clear");
     await userEvent.click(screen.getByRole('button'));
-    expect(screen.getByText("Loaded CSV has been cleared.")).toBeInTheDocument();
+    expect(screen.getByRole("main")).toContainHTML("Loaded CSV has been cleared.");
   })
 })
 
@@ -309,5 +314,85 @@ describe("registering is functional", () => {
 
     const fakeTime = await repl.executeCommand("sleep allthetime");
     expect(fakeTime).toEqual("Did you provide a real time?");
+  })
+})
+
+describe("unregistered command", () => {
+  test("unregistered command displays error message", async () => {
+    render(<App/>)
+    const inputBox = screen.getByRole('input');
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "ertiljleijryil");
+    await userEvent.click(screen.getByRole('button'));
+
+    expect(screen.getByRole("main")).toContainHTML('Could not recognize that command. Submit "help" to view a list of registered commands.');
+  })
+})
+
+describe("help works as expected", () => {
+  test("help displays table", async() => {
+    render(<App/>)
+    const inputBox = screen.getByRole('input');
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "help");
+    await userEvent.click(screen.getByRole('button'));
+
+    expect(screen.getByLabelText("help")).toBeInTheDocument();
+  })
+})
+
+describe("shortcuts work as expected", () => {
+  test("ctrl q - help", async () => {
+    render(<App/>)
+    const inputBox = screen.getByRole('input');
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mock_load data/testFile");
+    await userEvent.click(screen.getByRole('button'));
+
+    // Mock the Ctrl + Q
+    act(() => { document.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key: "q",
+          ctrlKey: true,
+        })
+    )});
+
+    await waitFor(() => expect(screen.getByRole("main")).toContainHTML("Command"));
+    await waitFor(() => expect(screen.getByRole("main")).toContainHTML("Description"));
+    await waitFor(() => expect(screen.getByLabelText("help")).toBeInTheDocument());
+  })
+
+  test("ctrl m - mode", async () => {
+    render(<App/>)
+
+    // Ensure that our test doesn't fail because we were in an unexpected mode
+    const inputBox = screen.getByRole('input');
+    await userEvent.click(inputBox);
+    await userEvent.type(inputBox, "mode BRIEF");
+    await userEvent.click(screen.getByRole('button'));
+
+    // Mock the Ctrl + M
+    act(() => { document.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key: "m",
+          ctrlKey: true,
+        })
+    )});
+
+    await waitFor(() => expect(screen.getByRole("main")).toContainHTML("Mode successfully set to VERBOSE"));
+  })
+
+  test("ctrl l - load", async () => {
+    render(<App/>)
+
+    // Mock the Ctrl + L
+    act(() => { document.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key: "l",
+          ctrlKey: true,
+        })
+    )});
+
+    await waitFor(() => expect(screen.getByRole("input")).toContainHTML("load_file ./data/"));
   })
 })

@@ -8,6 +8,7 @@
 * Project started: Friday, March 10, 2023
 * Project submitted: Friday, March 17, 2023
 * Effort: about 5 hours per day
+
 **Project structure:**
 
 The source code includes:
@@ -75,7 +76,7 @@ The source code includes:
     - These tests can be found under `./src/tests/mockDataTests.tsx`
   - The second approach focuses on mocking the fetch() function as closely as possible, ensuring that it is, for example, called the correct number of times.
     - These tests have been separated into `./src/tests/components.test.tsx`, `./src/tests/load_file.test.tsx`, `./src/tests/mode.test.tsx`, `./src/tests/search.test.tsx`, `./src/tests/view.test.tsx`
-Both approaches test success and error cases of each command in the specs (load, view, search, and mode). `mockDataTests.tsx` also contains a test for registering commands.
+Both approaches test success and error cases of each command in the specs (load, view, search, and mode). `mockDataTests.tsx` also contains tests for registering commands, the help command, and shortcuts.
 
 **How to:**
 - Run tests: Navigate to the `./src/tests` directory. In the Project Explorer panel, right click on the desired test, then click "Run"
