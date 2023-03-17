@@ -5,7 +5,7 @@
 
 **Total estimated time:** 
 
-* Project started: Friday, March 7, 2023
+* Project started: Friday, March 10, 2023
 * Project submitted: Friday, March 17, 2023
 * Effort: about 5 hours per day
 
@@ -14,11 +14,10 @@
 The source code includes:
 
 * __./src/main.tsx__: This is the main source file. This is the entry point that React uses to render the app. It renders the App function.
-* __./src/App.tsx__: Main application component (parent of other components)
+* __./src/App.tsx__: Renders the Header, HistoryBox, and InputBox components and handles registering + resolving commands.
 * __./src/components__: A folder containing our components (elements rendered by React) Header, HistoryBox, and InputBox (respectively in __Header.tsx__, __HistoryBox.tsx__, and __InputBox.tsx__)
-* __./src/java__: A folder containing our server-side java files from previous Sprints. This is were we put all the files that handle Parsing, Searching and communication with the Server.
+* __./src/java__: A folder containing our server-side java files from previous Sprints. This is where we put all the files that handle Parsing, Searching and communication with the Server.
 * __./src/REPL__: a folder that contains our command-processor functions for our REPL. Each file corresponds to a function that returns a Promise which resolves to a string, which is the value to print to history when the command is done executing.  __This is our implementation of User Story 6__.
-
 * __./data__: A folder containing two mock CSV datasets 
 * __./test/*.test.ts__: Files __mode.test.tsx__, __load_file.test.tsx__, __view.test_tsx__, * * __search.test.tsx__ are dedicated to testing each REPL command.  The __components.test.tsx__ performs some general tests.  Other files contain mock data (__mock_cvs_data.ts__) or helper functions (__helperSetupMock.ts__).  There is also a   __mockDataTests.tsx__ which, along with for files in the __mocking__ subfolder take a different approach to testing.
 
@@ -56,6 +55,8 @@ Our design choice for this Sprint mimics our design choice for previous Sprints.
 * Displaying the results of the the __search__ command uses the function __csv2Table__ to generate an HTML table from the dataset.
 # User Story 5: (End user stakeholder)
 * We used css to configure the div classes in such a way that the flexbox functionaly manages the screen layout as one resizes the screen or performs page zooms.
+* The command input box, Submit button, and part of the REPL history always remain visible on the page.
+* Our chosen screenreader (Narrator on Windows) is able to vocalize all outputs and recognize critical elements on the page (e.g. the header).
 * A user of the webpage can excute the baseline commands (mode, view, load, search) through short-cuts. For example: useKeyPress(['m'], doToggleViewMode); allows the user to switch the mode without having to type in mode.  We are defined the following shortcuts:
 *  useKeyPress(['m'], doToggleViewMode); ctrl-m is the same as submitting mode command
 *  useKeyPress(['v'], doView);  ctrl-v is the same as submitting view command
@@ -79,7 +80,9 @@ Our design choice for this Sprint mimics our design choice for previous Sprints.
 
 * The use of _dangerouslySetInnerHTML_ in __HistoryBox.tsx__ made it quite straightforward to format the CSV data returned by the __view__ and __search__ commands.  However, nothing was done to handle the case where CSV data contains strings that may be mistaken for HTML tags.  For instance if a column contains HTML-looking tags, visualization would have off behavior.  One would need to do some text replacing to ensure that the displayed HTML is always clean.
 * The command line arguments are assumed to be exactly one word each.  We do not handle spaces within filepaths, search terms, or column names.
-
+* Because we are reusing backend code, the limitations of that code still apply. 
+* For example, we require users to input their arguments in a specific order and require them to tell us whether their file has headers or not.
+* Requiring the addition of a new file for each new command could lead to a very large codebase.
 **Tests:**
 
 * We have a total of 37 tests spread over 6 files.
