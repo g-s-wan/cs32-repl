@@ -1,8 +1,8 @@
-import { REPLFunction } from "../../../src/REPL/REPLFunction";
+import { REPLFunction } from "../../../src/frontend/REPL/REPLFunction";
 import {mockLoadFetch, loadResponse } from "../mockLoadFetch"
 
 /**
- * REPL function to call API for loading CSV file.
+ * Mocks a REPL function that calls API for loading a CSV file.
  *
  * @param args : arguments to the REPL function
  * @returns a Promise that returns a string to be added to the History window.
@@ -10,9 +10,11 @@ import {mockLoadFetch, loadResponse } from "../mockLoadFetch"
 export const mockLoadPromise :  REPLFunction = args => {
   return new Promise<string>
   ((resolve, reject) => {
+    // If there is an argument, it's (probably) the filepath
     if (args.length > 0) {
       const filePath = args[0];
 
+      // Instead of fetching, grab a mocked JSON
       const responseObject: loadResponse = mockLoadFetch(`http://localhost:3232/loadcsv?filepath=` + `${filePath}`);
       if (responseObject.result.includes("error")) {
         reject(`An error occurred while loading the file: ${responseObject.message}`);
@@ -20,6 +22,7 @@ export const mockLoadPromise :  REPLFunction = args => {
         resolve(`Successfully loaded ${filePath}`);
       }
   } else {
+      // Need a filepath to load a file
       reject("Please include a filepath when using the load_file command.");
       return;
     }

@@ -28,7 +28,12 @@ Our design choice for this Sprint mimics our design choice for previous Sprints.
 * Each entry in the History window is considered an HTML entry: it can be a regular text or text that adheres to the HTML syntax.  This is what allows us to display _view_, _search_, and _help_ results are HTML tables.
 * Of the HTML formatting is done in css files.
 * Most of the screen layout is defined in css files (flexboxes)
-* 
+*  As part of this, our search command requires that the user indicate whether the CSV has headers or not. The format for a valid search command would be:
+    - search <column name/index?> <searchTerm> <y | n, depending on whether there are headers>
+* We have REPL class that is responsible for managing registered commands. App instantiates a REPL object.
+* As stated above, each file in the ./src/REPL/promises directory corresponds to a REPLFunction that handles part of the command-processor functionality.
+* We have implemented shortcuts for all commands mentioned in the assignment specs, as well as for clearing the history and displaying a table describing baseline commands.
+* If the content in the REPL history exceeds the size of the div, we automatically scroll down to the most recent entry.
 
 # User Story 1: (End user stakeholder)
 
@@ -83,9 +88,16 @@ Our design choice for this Sprint mimics our design choice for previous Sprints.
 * Because we are reusing backend code, the limitations of that code still apply. 
 * For example, we require users to input their arguments in a specific order and require them to tell us whether their file has headers or not.
 * Requiring the addition of a new file for each new command could lead to a very large codebase.
+
 **Tests:**
 
 * We have a total of 37 tests spread over 6 files.
+- We took two slightly different approaches to testing:
+  - The first approach focuses on mocking the JSON responses sent from the API. It involves a collection of URLs mapped to expected JSON responses.
+  - These tests can be found under __./src/tests/mockDataTests.tsx__
+  - The second approach focuses on mocking the fetch() function as closely as possible, ensuring that it is, for example, called the correct number of times.
+  - These tests have been separated into __./src/tests/components.test.tsx__, __./src/tests/load_file.test.tsx__, __./src/tests/mode.test.tsx__, __./src/tests/search.test.tsx__, __./src/tests/view.test.tsx__
+* Both approaches test success and error cases of each command in the specs (load, view, search, and mode). __mockDataTests.tsx__ also contains tests for registering commands, the help command, and shortcuts.
 * __./test/*.test.ts__: Files __mode.test.tsx__, __load_file.test.tsx__, __view.test_tsx__, * * __search.test.tsx__ are dedicated to testing each REPL command.  The __components.test.tsx__ performs some general tests.  Other files contain mock data (__mock_cvs_data.ts__) or helper functions (__helperSetupMock.ts__).  There is also a   __mockDataTests.tsx__ which, along with for files in the __mocking__ subfolder take a different approach to testing.
  * We tried to test every aspect of what could get displayed on the screen.
  * For functions that do not make any fetch calls, check that what gets displayed matches the expected.  This applies to the __mode__ command as well as tests that check that the screen contains the required components (History box, command button, and input box).
@@ -96,3 +108,12 @@ Our design choice for this Sprint mimics our design choice for previous Sprints.
 - Run tests: The __package.json__ contains a definition of "test" as __vitest__.  Therefore, to run tests, one issues the command __npm run test__.
 - Run the program in dev mode: The __package.json__ contains a definition of "dev" and "start" as __vite__.  Therefore, to build the solution, one issues the command __npm run dev__ or __npm run start__.
 Build and run the program: The __package.json__ contains a definition of "build" as __tsc && vite build__.  Therefore, to build the solution, one issues the command __npm run test__.
+- Build and run the program: 1) Navigate to the ./src/backend/java/Server file and execute main(). 2) In a terminal, navgiate to the root of this project, run `npm i`, then `npm run dev`
+- Run tests: Navigate to the `./src/tests` directory. In the Project Explorer panel, right click on the desired test, then click "Run"
+  - Available tests: 
+    - components.test.tsx
+    - load_file.test.tsx
+    - mode.test.tsx
+    - search.test.tsx
+    - view.test.tsx
+    - mockDataTests.tsx

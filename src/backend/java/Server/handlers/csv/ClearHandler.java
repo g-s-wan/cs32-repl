@@ -12,8 +12,8 @@ import spark.Route;
 /**
  * Handler class for requests to the /clear endpoint
  *
- * Returns the contents of the CSV if the file was displayed successfully, or an appropriate error message
- * depending on what went wrong
+ * Returns a success message if the file was displayed successfully, or an appropriate error message
+ *
  */
 public class ClearHandler implements Route {
   // Keeps track of the loaded CSV file
@@ -39,11 +39,13 @@ public class ClearHandler implements Route {
     Map<String, Object> jsonMap = new LinkedHashMap<>();
 
     try {
+      // Success
       this.state.setLoadedCSV("");
       jsonMap.put("result", "success");
       jsonMap.put("message", "Loaded file has been cleared.");
       return new ClearResponse(jsonMap).serialize();
     } catch (Exception e) {
+      // General failure
       jsonMap.put("result", "error_bad_request");
       jsonMap.put("message", "Something went wrong while trying to clear the loaded CSV.");
       return new ClearResponse(jsonMap).serialize();

@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../src/App";
-import "../styles/App.css";
+import "../src/frontend/styles/App.css";
 
 import {prepareFetchMock} from "./helperSetupMock"
 import {mock_csv_data } from "./mock_csv_data"
@@ -26,7 +26,8 @@ describe("view command", () => {
       await userEvent.click(inputBox);
       await userEvent.type(inputBox, "view");
       await userEvent.click(screen.getByRole('button'));
-  
+
+      // Check that correct error message is displayed
       expect(fetch).toHaveBeenCalledWith('http://localhost:3232/viewcsv');
       expect(screen.getByRole("main")).toContainHTML(`An error occurred while viewing the file: ${expectedResponse.message}`);
     })
@@ -48,6 +49,7 @@ describe("view command", () => {
   
       expect(fetch).toHaveBeenCalledWith('http://localhost:3232/viewcsv');
 
+      // Check every cell in the mock data to make sure it is present
       mock_csv_data.forEach( row => {
         row.forEach(col => {
           expect(screen.getByRole("main")).toContainHTML(col);
@@ -72,6 +74,7 @@ describe("view command", () => {
   
       expect(fetch).toHaveBeenCalledWith('http://localhost:3232/viewcsv');
 
+      // Check that the appropriate error message is displayed
       expect(screen.getByRole("main")).toContainHTML(expectedResponse.message);
 
      })

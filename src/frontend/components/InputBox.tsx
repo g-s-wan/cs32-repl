@@ -1,29 +1,27 @@
-
 interface InputBoxProps {
-//  history: (string|string[])[];
-//  history: History;
-//  handle: (data: (string | string[])[]) => void;
   handle: (data: string ) => void;
    text: string;
   setText: Function;
 }
 
-
+/**
+ * Contains input-related elements (i.e. command box and Submit button)
+ * @param props
+ * @constructor
+ */
 export default function InputBox(props: InputBoxProps) {
 
   /**
-   * Handles the submit button being clicked or the enter key being pressed!
-   * You may want to make this function more sophisticated to add real
-   * command logic, but for now it just adds the text to the history box.
+   * Handles the submit button being clicked or the enter key being pressed
    */
   function handleSubmit() {
-//    props.handle([...props.history, props.text]);
     props.handle(props.text);
     props.setText("");
   }
 
+  // When the user presses "Enter" or clicks the button, the command is processed
   return (
-    <div className="repl-input repl-center">
+    <div className="repl-input repl-center" aria-label="REPL input area">
       <input
         role= "input"
         type="text"
@@ -35,9 +33,10 @@ export default function InputBox(props: InputBoxProps) {
           }
         }}
         className="repl-command-box"
+        aria-label="Desired command"
       />
 
-      <button role="button" className="repl-button" onClick={handleSubmit}>Submit</button>
+      <button role="button" aria-labelledby="Submit command" className="repl-button" onClick={handleSubmit}>Submit</button>
     </div>
   );
 }

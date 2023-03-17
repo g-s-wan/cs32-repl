@@ -12,14 +12,14 @@ export let modeBrief : boolean = true;
 export const modePromise :  REPLFunction = args => {
     return new Promise<string>
         ((resolve, reject) => {
-
+            // Allows the user to "force" a mode with an argument
             if (args.length > 0) {
                 if (args[0].toLowerCase() === "brief") {
                     modeBrief = true;
 
                 } else if (args[0].toLowerCase() === "verbose") {
                     modeBrief = false;
-
+                // Only accepts case-insensitive "brief" or "verbose" as arguments
                 } else {
                     reject("Invalid mode option.");
                     return;

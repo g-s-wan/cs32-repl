@@ -1,7 +1,7 @@
 import { REPLFunction } from "../REPLFunction";
 
 /**
- * REPL function to call API for viewing a CSV file.
+ * REPL function to call API for clearing a CSV file.
  *
  * @param args : arguments to the REPL function
  * @returns a Promise that returns a string to be added to the History window.
@@ -13,6 +13,7 @@ export const clearPromise :  REPLFunction = args => {
     fetch("http://localhost:3232/clear")
     .then(response => response.json())
     .then(responseObject => {
+      // Reject if the response from the API indicated an error
       if (responseObject.result.includes("error")) {
         reject(`An error occurred while clearing the loaded CSV file from cache.`);
         return;

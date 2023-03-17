@@ -8,7 +8,7 @@ import { REPLFunction } from "../REPLFunction";
 export const invalidCommandPromise :  REPLFunction = args => {
     return new Promise<string>
         ((resolve, reject) => {
-            // This function always send a reject.
+            // This function always sends a reject.
             reject('Could not recognize that command. Submit "help" to view a list of registered commands.');
         });
 }

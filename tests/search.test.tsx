@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../src/App";
-import "../styles/App.css";
+import "../src/frontend/styles/App.css";
 
 import {prepareFetchMock} from "./helperSetupMock"
 import {mock_csv_data } from "./mock_csv_data"
@@ -34,6 +34,8 @@ describe("search command", () => {
       await userEvent.click(screen.getByRole('button'));
   
       expect(fetch).toHaveBeenCalledWith(url);
+
+      // Appropriate error message is displayed
       expect(screen.getByRole("main")).toContainHTML(`An error occurred while searching the file: ${expectedResponse.message}`);
     })
   
@@ -55,9 +57,11 @@ describe("search command", () => {
 
       const inputBox = screen.getByRole('input');
       await userEvent.click(inputBox);
+      // Only have a searchTerm (which is interpreted as a column index by the command input box)
       await userEvent.type(inputBox, "search " + searchTerm);
       await userEvent.click(screen.getByRole('button'));
-  
+
+      // The intended URL was NOT called
       expect(fetch).not.toHaveBeenCalledWith(url);
       expect(screen.getByRole("main")).toContainHTML(expectedResponse.message);
     })
@@ -68,6 +72,7 @@ describe("search command", () => {
   
       const header = mock_csv_data[0];
 
+      // Loop through CSV data to check that EVERY expected cell is present in the REPL history
       for (let rowIndex = 1; rowIndex < mock_csv_data.length; rowIndex++) {
         
         const row = mock_csv_data [rowIndex];
@@ -99,14 +104,15 @@ describe("search command", () => {
           expect(screen.getByRole("main")).toContainHTML(column);
 
         }}
-
-      })
+      // Test will timeout and fail without this
+      }, 10000)
 
     test("search for non existing through mock data", async (timeout=10000) => {
         render(<App />);
     
         const header = mock_csv_data[0];
-  
+
+      // Loop through CSV data to check every cell
         for (let rowIndex = 1; rowIndex < mock_csv_data.length; rowIndex++) {
           
           const row = mock_csv_data [rowIndex];
@@ -137,8 +143,8 @@ describe("search command", () => {
             expect(screen.getByRole("main")).toContainHTML("No results found");
   
           }}
-  
-        })
+        // Test will timeout and fail without this
+        }, 10000)
 
     test("search with error status from API", async () => {
           render(<App />);
@@ -162,7 +168,8 @@ describe("search command", () => {
           await userEvent.click(screen.getByRole('button'));
       
           expect(fetch).toHaveBeenCalledWith(url);
-    
+
+          // Appropriate error message is displayed int he REPL history
           expect(screen.getByRole("main")).toContainHTML("Please double check your parameters. The last argument should be either 'y' or 'n' depending on whether your file has headers.");
          })
     })

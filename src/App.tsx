@@ -1,24 +1,24 @@
-import { useState, useEffect, KeyboardEvent  } from "react";
-import "../styles/App.css";
-import Header from "./components/Header";
-import HistoryBox from "./components/HistoryBox";
-import InputBox from "./components/InputBox";
+import { useState, useEffect } from "react";
+import "./frontend/styles/App.css";
+import Header from "./frontend/components/Header";
+import HistoryBox from "./frontend/components/HistoryBox";
+import InputBox from "./frontend/components/InputBox";
 
-import {REPL} from "./REPL/REPL"
-import {modePromise, modeBrief} from "./REPL/promises/modePromise"
-import {loadPromise} from "./REPL/promises/loadPromise"
-import {searchPromise} from "./REPL/promises/searchPromise"
-import { helpPromise } from "./REPL/promises/helpPromise";
-import {viewPromise} from "./REPL/promises/viewPromise";
-import {clearPromise} from "./REPL/promises/clearPromise";
-import {useKeyPress} from './useKeyPress';
+import {REPL} from "./frontend/REPL/REPL"
+import {modePromise, modeBrief} from "./frontend/REPL/promises/modePromise"
+import {loadPromise} from "./frontend/REPL/promises/loadPromise"
+import {searchPromise} from "./frontend/REPL/promises/searchPromise"
+import { helpPromise } from "./frontend/REPL/promises/helpPromise";
+import {viewPromise} from "./frontend/REPL/promises/viewPromise";
+import {clearPromise} from "./frontend/REPL/promises/clearPromise";
+import {useKeyPress} from './frontend/REPL/useKeyPress';
 import {mockLoadPromise} from "../tests/mocking/promises/mockLoadPromise";
 import {mockViewPromise} from "../tests/mocking/promises/mockViewPromise";
 import {mockSearchPromise} from "../tests/mocking/promises/mockSearchPromise";
 import {mockClearPromise} from "../tests/mocking/promises/mockClearPromise";
 
 function App() {
-
+  // All state variables
   const [history, setHistory] = useState<(string | string[])[]>([]);
   const [text, setText] = useState("");
   const [fullCommand, setFullCommand] = useState("");
@@ -26,6 +26,8 @@ function App() {
   const [histEntry, setHistEntry] = useState("");
 
   const repl = new REPL();
+  // "Baseline" commands - do not require additional registration
+  // Developer can remove any of these lines to "unregister" a command
   repl.registerCommand("mode", modePromise);
   repl.registerCommand("load_file", loadPromise);
   repl.registerCommand("view", viewPromise);
@@ -33,7 +35,7 @@ function App() {
   repl.registerCommand("help", helpPromise);
   repl.registerCommand("clear", clearPromise);
 
-  // For mocking
+  // For mocking purposes only
   repl.registerCommand("mock_load", mockLoadPromise);
   repl.registerCommand("mock_view", mockViewPromise);
   repl.registerCommand("mock_search", mockSearchPromise);
@@ -41,7 +43,6 @@ function App() {
 
   useEffect(() => {
     // Do not add anything to the History if the histEntry string changed because it was cleared.
-    //
     if (histEntry.length > 0) {
 
       if (!modeBrief) {
@@ -59,7 +60,7 @@ function App() {
   }, [histEntry]);
 
   /**
-   *
+   * Wrapper for executeCommand()
    */
   function handleCommand() {
 
@@ -67,8 +68,9 @@ function App() {
   }
 
   /**
+   * Handles a command by accessing the REPL's Map of registered commands
    *
-   * @param command
+   * @param command - the command that will be processed
    * @returns
    */
   function executeCommand(command: string) {
@@ -79,6 +81,7 @@ function App() {
         if (command.length == 0)
           return;
 
+        // Use the REPL's map of registered commands to execute the command's corresponding function
         try {
           repl.executeCommand(command)
             .then ( (response) => { setHistEntry(response);            setOutputStatus("Output: ");})
@@ -90,6 +93,9 @@ function App() {
         }
   }
 
+  /**
+   * The following are helper functions that assist with shortcuts
+   */
   const doToggleViewMode = () => {
     executeCommand("mode");
   }
@@ -102,10 +108,12 @@ function App() {
     executeCommand("help");
   }
 
+  // Fill the command input box with a boilerplate for the search command
   const doSearch = () => {
     setText("search <search text> y <column index>")
   }
 
+  // Fill the command input box with a boilerplate for the load command
   const doLoad = () => {
     setText("load_file ./data/<file name>")
   }
@@ -114,12 +122,13 @@ function App() {
     setHistory([])
   }
 
+  // Shortcuts involve holding the Ctrl/Command key and the indicated letter key at the same time
   useKeyPress(['m'], doToggleViewMode);
   useKeyPress(['v'], doView);
   useKeyPress(['f'], doSearch);
   useKeyPress(['l'], doLoad);
   useKeyPress(['r'], doClear);
-  useKeyPress(['?'], doHelp);
+  useKeyPress(['q'], doHelp);
 
   /**
    * TSX for the component

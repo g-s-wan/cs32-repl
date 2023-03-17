@@ -10,6 +10,7 @@ export const viewPromise :  REPLFunction = args => {
     return new Promise<string>
         ((resolve, reject) => {
 
+<<<<<<< HEAD:src/REPL/promises/viewPromise.ts
             try {
                 fetch("http://localhost:3232/viewcsv")
                 .then(response => response.json())
@@ -27,6 +28,21 @@ export const viewPromise :  REPLFunction = args => {
                 });
             } catch (ex: any) {
                 reject(ex.message);
+=======
+            fetch("http://localhost:3232/viewcsv")
+            .then(response => response.json())
+            .then(responseObject => {
+                // Reject if the API returned an error
+                if (responseObject.result.includes("error")) {
+                    reject(`An error occurred while viewing the file: ${responseObject.message}`);
+                  return;
+                } else {
+                // Return CSV contents as a table
+                resolve("Viewing CSV data <br>" +  buildHtmlTable(responseObject.data));
+            }})
+            .catch((error) => {
+                reject(error);
+>>>>>>> 4685c22c85229a34ac611d6ab45b5a82f69b4140:src/frontend/REPL/promises/viewPromise.ts
                 return;
             }
             })

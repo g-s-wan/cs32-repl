@@ -133,7 +133,7 @@ public class Search {
 
           // Obtain only the rows with values matching the search term in the specified column
           if (line_arr[index].contains(searchValue)) {
-            String toAdd = "Row " + rowIndex + ": " + line;
+            String toAdd = line;
             ret.add(toAdd);
             // We only want to print and add ret if we found a match
             stringList.add(ret);
@@ -141,7 +141,7 @@ public class Search {
         } else {
           // If index equals -1, the user did not need to filter by column, so we can return the
           // whole row
-          String toAdd = "Row " + rowIndex + ": " + line;
+          String toAdd = line;
           ret.add(toAdd);
           stringList.add(ret);
         }

@@ -1,9 +1,10 @@
 import { REPLFunction } from "../REPLFunction";
 
+// The table is large, so keep the output brief
 export let modeBrief : boolean = true;
 
 /**
- * REPL function to change the display mode
+ * REPL function to display a table of baseline commands
  * 
  * @param args : arguments to the REPL function
  * @returns a Promise that returns a string to be added to the History window.
@@ -12,8 +13,13 @@ export let modeBrief : boolean = true;
 export const helpPromise :  REPLFunction = args => {
     return new Promise<string>
         ((resolve, reject) => {
+<<<<<<< HEAD:src/REPL/promises/helpPromise.ts
 
             resolve("<h2>REPL HELP</h2><table>"
+=======
+            // Return a static table of commands and brief descriptions of their functionalities
+            resolve("<table role='table' aria-label='help'>"
+>>>>>>> 4685c22c85229a34ac611d6ab45b5a82f69b4140:src/frontend/REPL/promises/helpPromise.ts
             + "<thead>"
             +   "<tr>"
             +       "<th>Command</th>"
