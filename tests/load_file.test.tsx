@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import App from "../src/App";
 import "../styles/App.css";
 
-import {prepareFetchMock} from "./setupMock"
+import {prepareFetchMock} from "./helperSetupMock"
 
 describe("load_file command", () => {
   

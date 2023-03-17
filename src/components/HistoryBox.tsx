@@ -13,11 +13,11 @@ const AlwaysScrollToBottom = () => {
 
   try {
 
-    // const elementRef = useRef();
+    const elementRef = useRef();
 
-    // useEffect(() => elementRef?.current?.scrollIntoView());
-    // return <div ref={elementRef} />;
-    return null;
+     useEffect(() => elementRef?.current?.scrollIntoView());
+     return <div ref={elementRef} />;
+
   } catch {
     return null;
   }
@@ -43,4 +43,5 @@ function HistoryBox(props: HistoryBoxProps) {
   );
 }
 
+// <AlwaysScrollToBottom />
 export default HistoryBox;

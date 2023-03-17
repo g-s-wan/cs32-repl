@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import App from "../src/App";
 import "../styles/App.css";
 
-import {prepareFetchMock} from "./setupMock"
+import {prepareFetchMock} from "./helperSetupMock"
 import {mock_csv_data } from "./mock_csv_data"
 
 describe("view command", () => {
