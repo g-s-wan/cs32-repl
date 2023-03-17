@@ -14,6 +14,8 @@ export const searchPromise :  REPLFunction = args => {
         ((resolve, reject) => {
           // Request needs at least a search term and an indicator as to whether the CSV has headers - column name/index is optional
             if (args.length >= 2) {
+
+              try {
                 let searchTerm;
                 let hasHeaders;
                 // If there are two arguments, the user has left out the optional col parameter
@@ -47,7 +49,14 @@ export const searchPromise :  REPLFunction = args => {
                   reject(error);
                   return;
                 });
+<<<<<<< HEAD:src/REPL/promises/searchPromise.ts
+              } catch (ex: any) {
+                reject(ex.message);
+                return;
+              }
+=======
                 // If the user provided either one or no arguments
+>>>>>>> 4685c22c85229a34ac611d6ab45b5a82f69b4140:src/frontend/REPL/promises/searchPromise.ts
             }  else {
                 reject("Incorrect number of parameters.");
                 return;
