@@ -12,13 +12,13 @@
 **Project structure:**
 
 The source code includes:
-
+* __./src/frontend: Includes code related to the rendering of the REPL
+* __./src/java: A folder containing our server-side java files from previous Sprints. This is where we put all the files that handle Parsing, Searching and communication with the Server.
 * __./src/main.tsx__: This is the main source file. This is the entry point that React uses to render the app. It renders the App function.
 * __./src/App.tsx__: Renders the Header, HistoryBox, and InputBox components and handles registering + resolving commands.
-* __./src/components__: A folder containing our components (elements rendered by React) Header, HistoryBox, and InputBox (respectively in __Header.tsx__, __HistoryBox.tsx__, and __InputBox.tsx__)
-* __./src/java__: A folder containing our server-side java files from previous Sprints. This is where we put all the files that handle Parsing, Searching and communication with the Server.
-* __./src/REPL__: a folder that contains our command-processor functions for our REPL. Each file corresponds to a function that returns a Promise which resolves to a string, which is the value to print to history when the command is done executing.  __This is our implementation of User Story 6__.
-* __./data__: A folder containing two mock CSV datasets 
+* __./src/frontend/components__: A folder containing our components (elements rendered by React) Header, HistoryBox, and InputBox (respectively in __Header.tsx__, __HistoryBox.tsx__, and __InputBox.tsx__)
+* __./src/frontend/REPL__: a folder that contains our command-processor functions for our REPL. Each file corresponds to a function that returns a Promise which resolves to a string, which is the value to print to history when the command is done executing.  __This is our implementation of User Story 6__.
+* __./data__: A folder containing three mock CSV datasets 
 * __./test/*.test.ts__: Files __mode.test.tsx__, __load_file.test.tsx__, __view.test_tsx__, * * __search.test.tsx__ are dedicated to testing each REPL command.  The __components.test.tsx__ performs some general tests.  Other files contain mock data (__mock_cvs_data.ts__) or helper functions (__helperSetupMock.ts__).  There is also a   __mockDataTests.tsx__ which, along with our files in the __mocking__ subfolder take a different approach to testing.
 
 **Design choices:**

@@ -16,7 +16,11 @@ export const viewPromise :  REPLFunction = args => {
                 // Reject if the API returned an error
                 if (responseObject.result.includes("error")) {
                     reject(`An error occurred while viewing the file: ${responseObject.message}`);
-                  return;
+                    return;
+                    // Empty CSV
+                } else if (responseObject.data[0] === undefined) {
+                    resolve("The CSV is empty.");
+                    return;
                 } else {
                 // Return CSV contents as a table
                 resolve("Viewing CSV data <br>" +  buildHtmlTable(responseObject.data));

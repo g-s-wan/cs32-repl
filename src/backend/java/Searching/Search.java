@@ -87,13 +87,13 @@ public class Search {
     String line = "";
 
     line = reader.readLine();
-    int colNum = line.split(",").length;
-
     // If we've reached this point, we were able to read the line, and if there is nothing in the
     // CSV, line will be null instead of an empty string
     if (line == null) {
       throw new EOFException();
     }
+
+    int colNum = line.split(",").length;
 
     // Keeps track of which row reader is currently reading
     int rowIndex = 0;

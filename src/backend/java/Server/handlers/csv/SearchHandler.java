@@ -4,6 +4,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import Searching.Search;
+import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -99,6 +100,11 @@ public class SearchHandler implements Route {
             jsonMap.put("filepath", this.state.getLoadedCSV());
             return new SearchResponse(jsonMap).serialize();
             // If the user provides an invalid column name/index
+        } catch (EOFException e) {
+            jsonMap.put("result", "error_bad_request");
+            jsonMap.put("message", "The CSV is empty.");
+            jsonMap.put("filepath", this.state.getLoadedCSV());
+            return new SearchResponse(jsonMap).serialize();
         } catch (NumberFormatException e) {
             jsonMap.put("result", "error_bad_request");
             jsonMap.put("message", "Invalid header name or column index. Did you make a typo?");
