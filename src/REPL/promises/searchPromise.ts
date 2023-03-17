@@ -13,6 +13,8 @@ export const searchPromise :  REPLFunction = args => {
     return new Promise<string>
         ((resolve, reject) => {
             if (args.length >= 2) {
+
+              try {
                 let searchTerm;
                 let hasHeaders;
                 args.length === 2 ? searchTerm = args[0] : searchTerm = args[1];
@@ -42,7 +44,10 @@ export const searchPromise :  REPLFunction = args => {
                   reject(error);
                   return;
                 });
-
+              } catch (ex: any) {
+                reject(ex.message);
+                return;
+              }
             }  else {
                 reject("Incorrect number of parameters.");
                 return;

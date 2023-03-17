@@ -10,21 +10,26 @@ export const viewPromise :  REPLFunction = args => {
     return new Promise<string>
         ((resolve, reject) => {
 
-            fetch("http://localhost:3232/viewcsv")
-            .then(response => response.json())
-            .then(responseObject => {
-                if (responseObject.result.includes("error")) {
-                    reject(`An error occurred while viewing the file: ${responseObject.message}`);
-                  return;
-                } else {
+            try {
+                fetch("http://localhost:3232/viewcsv")
+                .then(response => response.json())
+                .then(responseObject => {
+                    if (responseObject.result.includes("error")) {
+                        reject(`An error occurred while viewing the file: ${responseObject.message}`);
+                    return;
+                    } else {
 
-                resolve("Viewing CSV data <br>" +  buildHtmlTable(responseObject.data));
-            }})
-            .catch((error) => {
-                reject(error);
+                    resolve("Viewing CSV data <br>" +  buildHtmlTable(responseObject.data));
+                }})
+                .catch((error) => {
+                    reject(error);
+                    return;
+                });
+            } catch (ex: any) {
+                reject(ex.message);
                 return;
-            });
-
+            }
             })
+   
 
         };

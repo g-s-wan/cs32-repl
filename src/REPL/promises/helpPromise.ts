@@ -13,7 +13,7 @@ export const helpPromise :  REPLFunction = args => {
     return new Promise<string>
         ((resolve, reject) => {
 
-            resolve("<table>"
+            resolve("<h2>REPL HELP</h2><table>"
             + "<thead>"
             +   "<tr>"
             +       "<th>Command</th>"
