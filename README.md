@@ -19,7 +19,7 @@ The source code includes:
 * __./src/frontend/components__: A folder containing our components (elements rendered by React) Header, HistoryBox, and InputBox (respectively in __Header.tsx__, __HistoryBox.tsx__, and __InputBox.tsx__)
 * __./src/frontend/REPL__: a folder that contains our command-processor functions for our REPL. Each file corresponds to a function that returns a Promise which resolves to a string, which is the value to print to history when the command is done executing.  __This is our implementation of User Story 6__.
 * __./data__: A folder containing three mock CSV datasets 
-* __./test/*.test.ts__: Files __mode.test.tsx__, __load_file.test.tsx__, __view.test_tsx__, * * __search.test.tsx__ are dedicated to testing each REPL command.  The __components.test.tsx__ performs some general tests.  Other files contain mock data (__mock_cvs_data.ts__) or helper functions (__helperSetupMock.ts__).  There is also a   __mockDataTests.tsx__ which, along with our files in the __mocking__ subfolder take a different approach to testing.
+* __./test/*.test.ts__: Files __mode.test.tsx__, __load_file.test.tsx__, __view.test_tsx__, * * __search.test.tsx__ are dedicated to testing each REPL command.  The __components.test.tsx__ performs some general tests. The __keyboard.test.tsx__ contains tests for keyboard shortcut logic.  File __help.test.tsx__ tests the 'help' command.  Other files contain mock data (__mock_cvs_data.ts__) or helper functions (__helperSetupMock.ts__).  There is also a   __mockDataTests.tsx__ which, along with our files in the __mocking__ subfolder take a different approach to testing.
 
 **Design choices:**
 
