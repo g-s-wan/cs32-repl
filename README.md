@@ -98,7 +98,7 @@ Our design choice for this Sprint mimics our design choice for previous Sprints.
   - The first approach focuses on mocking the JSON responses sent from the API. It involves a collection of URLs mapped to expected JSON responses.
   - These tests can be found under __./src/tests/mockDataTests.tsx__
   - The second approach focuses on mocking the fetch() function as closely as possible, ensuring that it is, for example, called the correct number of times.
-  - These tests have been separated into __./src/tests/components.test.tsx__, __./src/tests/load_file.test.tsx__, __./src/tests/mode.test.tsx__, __./src/tests/search.test.tsx__, __./src/tests/view.test.tsx__
+  - These tests have been separated into __./src/tests/components.test.tsx__, __./src/tests/load_file.test.tsx__, __./src/tests/mode.test.tsx__, __./src/tests/search.test.tsx__, __./src/tests/view.test.tsx__, __help.test.tsx__, and __keyboard.test.tsx__.
 * Both approaches test success and error cases of each command in the specs (load, view, search, and mode). __mockDataTests.tsx__ also contains tests for registering commands, the help command, and shortcuts.
 * __./test/*.test.ts__: Files __mode.test.tsx__, __load_file.test.tsx__, __view.test_tsx__, * * __search.test.tsx__ are dedicated to testing each REPL command.  The __components.test.tsx__ performs some general tests.  Other files contain mock data (__mock_cvs_data.ts__) or helper functions (__helperSetupMock.ts__).
  * We tried to test every aspect of what could get displayed on the screen.
@@ -106,8 +106,36 @@ Our design choice for this Sprint mimics our design choice for previous Sprints.
  * In the second approach, for functions that make fetch calls, the use of "global.fetch = vi.fn()" allows mocking calls.  Our tests consist of issuing the command, asserting that fetch was called with the right url, and that the response was as expected.
  * We made a test for when an unexpected situation (such as an impossible connection due to lack of network connection to the server) occurs.  The error message for this can be different based on the OS/Client, etc... But we did test that there is a reject of the promise.
 
+ The test coverage is as follows:
+
+ % Coverage report from c8
+
+
+File                        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+----------------------------|---------|----------|---------|---------|-------------------
+All files                   |   95.48 |    92.59 |   97.56 |   95.48 |                   
+ src                        |   98.01 |    88.88 |     100 |   98.01 |                   
+  App.tsx                   |   98.01 |    88.88 |     100 |   98.01 | 91-93             
+ src/frontend/REPL          |    98.3 |       95 |     100 |    98.3 |                   
+  REPL.ts                   |     100 |      100 |     100 |     100 |                   
+  csv2Table.ts              |   94.28 |       80 |     100 |   94.28 | 8-9               
+  useKeyPress.ts            |     100 |      100 |     100 |     100 |                   
+ src/frontend/REPL/promises |   92.75 |    94.91 |   93.75 |   92.75 |                   
+  clearPromise.ts           |      80 |      100 |     100 |      80 | 16-21             
+  helpPromise.ts            |     100 |      100 |   66.66 |     100 |                   
+  invalidCommandPromise.ts  |     100 |      100 |     100 |     100 |                   
+  loadPromise.ts            |   88.37 |       90 |     100 |   88.37 | 29-30,33-35       
+  modePromise.ts            |     100 |      100 |     100 |     100 |                   
+  searchPromise.ts          |   92.06 |    94.73 |     100 |   92.06 | 49-50,53-55       
+  viewPromise.ts            |   88.57 |    85.71 |     100 |   88.57 | 22-23,29-30       
+ src/frontend/components    |   95.91 |    81.81 |     100 |   95.91 |                   
+  Header.tsx                |     100 |      100 |     100 |     100 |                   
+  HistoryBox.tsx            |   95.83 |       80 |     100 |   95.83 | 24-25             
+  InputBox.tsx              |   95.23 |       80 |     100 |   95.23 | 32-33             
+----------------------------|---------|----------|---------|---------|-------------------
+
 **How to:**
-- Run tests: The __package.json__ contains a definition of "test" as __vitest__.  Therefore, to run tests, one issues the command __npm run test__.
+- Run tests: The __package.json__ contains a definition of "test" as __vitest__.  Therefore, to run tests, one issues the command __npm run test__.  To run vitest with coverage, run the command __npm run test-with-coverage__ command.  
   - Alternatively: 
     - Navigate to the `./src/tests` directory. In the Project Explorer panel, right click on the desired test, then click "Run"
     - Available tests:
@@ -116,5 +144,7 @@ Our design choice for this Sprint mimics our design choice for previous Sprints.
       - mode.test.tsx
       - search.test.tsx
       - view.test.tsx
+      - help.test.tsx
+      - keyboard.test.tsx
       - mockDataTests.tsx
 - Run the program: The __package.json__ contains a definition of "dev" and "start" as __vite__.  Therefore, to build the solution, 1) navigate to the `./src/backend/java/Server` file and execute main(). 2) In a terminal, navigate to the root of this project, run `npm i`, then `npm run dev`
