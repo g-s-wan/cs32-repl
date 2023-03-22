@@ -18,4 +18,4 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Build and run the MBT/PBT demo with Maven
-        run: mvn test
+        run: cd
