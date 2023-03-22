@@ -1,5 +1,3 @@
-package apis;
-
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import Server.handlers.csv.LoadHandler;
