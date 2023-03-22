@@ -1,4 +1,4 @@
-name: Self-hosted Java CI Demo
+name: Self-hosted Frontend Testing
 
 on:
   push:
@@ -17,5 +17,7 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: maven
-      - name: Build and run the MBT/PBT demo with Maven
+      - name: Install necessary packages
+        run: npm i
+      - name: Build and run frontend tests
         run: npm run test
