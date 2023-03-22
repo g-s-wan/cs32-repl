@@ -1,4 +1,4 @@
-import { REPLFunction } from "../../../../src/frontend/REPL/REPLFunction";
+import { REPLFunction } from "../../../../frontend/REPL/REPLFunction";
 import {mockLoadFetch, loadResponse } from "../mockLoadFetch"
 
 /**

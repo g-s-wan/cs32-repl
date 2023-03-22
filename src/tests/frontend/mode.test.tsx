@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import App from "../../src/App";
-import "../../src/frontend/styles/App.css";
+import App from "../../App";
+import "../../frontend/styles/App.css";
 import jest from "jest-mock";
 
 Element.prototype.scrollIntoView = jest.fn();

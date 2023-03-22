@@ -1,4 +1,4 @@
-import {REPLFunction} from "../../../../src/frontend/REPL/REPLFunction";
+import {REPLFunction} from "../../../../frontend/REPL/REPLFunction";
 
 /**
  * A simple function that either resolves or rejects depending on the argument passed in

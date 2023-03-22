@@ -1,11 +1,11 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Header from "../../src/frontend/components/Header";
-import HistoryBox from "../../src/frontend/components/HistoryBox";
-import InputBox from "../../src/frontend/components/InputBox";
-import App from "../../src/App";
-import "../../src/frontend/styles/App.css";
+import Header from "../../frontend/components/Header";
+import HistoryBox from "../../frontend/components/HistoryBox";
+import InputBox from "../../frontend/components/InputBox";
+import App from "../../App";
+import "../../frontend/styles/App.css";
 import jest from "jest-mock";
 
 Element.prototype.scrollIntoView = jest.fn();
