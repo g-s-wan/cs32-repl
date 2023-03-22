@@ -1,5 +1,5 @@
-import {REPLFunction} from "../../../../frontend/REPL/REPLFunction";
-import {buildHtmlTable} from "../../../../frontend/REPL/csv2Table";
+import {REPLFunction} from "../../../../REPL/REPLFunction";
+import {buildHtmlTable} from "../../../../REPL/csv2Table";
 import {mockSearchFetch} from "../mockSearchFetch";
 
 /**

@@ -1,4 +1,4 @@
-import {REPLFunction} from "../../../../frontend/REPL/REPLFunction";
+import {REPLFunction} from "../../../../REPL/REPLFunction";
 
 /**
  * A simple function to test registering non-baseline commands

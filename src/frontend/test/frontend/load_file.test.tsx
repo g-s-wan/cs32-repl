@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import App from "../../App";
-import "../../frontend/styles/App.css";
+import App from "../../../App";
+import "../../styles/App.css";
 
 import {prepareFetchMock} from "./helperSetupMock"
 import jest from "jest-mock";

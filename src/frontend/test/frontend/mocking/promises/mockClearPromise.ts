@@ -1,5 +1,5 @@
 import {mockClearFetch} from "../mockClearFetch";
-import {REPLFunction} from "../../../../frontend/REPL/REPLFunction";
+import {REPLFunction} from "../../../../REPL/REPLFunction";
 
 /**
  * Mocks a REPL function that calls API for clearing the loaded CSV file.

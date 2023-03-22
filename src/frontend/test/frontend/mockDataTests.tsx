@@ -4,9 +4,9 @@ import { act } from 'react-dom/test-utils';
 import jest from "jest-mock";
 import userEvent from "@testing-library/user-event";
 import React from "react";
-import App from "../../App";
-import "../../frontend/styles/App.css";
-import { REPL } from "../../frontend/REPL/REPL";
+import App from "../../../App";
+import "../../styles/App.css";
+import { REPL } from "../../REPL/REPL";
 import {hugPromise} from "./mocking/promises/hugPromise"
 import {sleepPromise} from "./mocking/promises/sleepPromise";
 

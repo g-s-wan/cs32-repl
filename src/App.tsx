@@ -12,10 +12,10 @@ import { helpPromise } from "./frontend/REPL/promises/helpPromise";
 import {viewPromise} from "./frontend/REPL/promises/viewPromise";
 import {clearPromise} from "./frontend/REPL/promises/clearPromise";
 import {useKeyPress} from './frontend/REPL/useKeyPress';
-import {mockLoadPromise} from "./test/frontend/mocking/promises/mockLoadPromise";
-import {mockViewPromise} from "./test/frontend/mocking/promises/mockViewPromise";
-import {mockSearchPromise} from "./test/frontend/mocking/promises/mockSearchPromise";
-import {mockClearPromise} from "./test/frontend/mocking/promises/mockClearPromise";
+import {mockLoadPromise} from "./frontend/test/frontend/mocking/promises/mockLoadPromise";
+import {mockViewPromise} from "./frontend/test/frontend/mocking/promises/mockViewPromise";
+import {mockSearchPromise} from "./frontend/test/frontend/mocking/promises/mockSearchPromise";
+import {mockClearPromise} from "./frontend/test/frontend/mocking/promises/mockClearPromise";
 
 function App() {
   // All state variables
