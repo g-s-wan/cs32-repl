@@ -3,7 +3,7 @@ name: Self-hosted Java CI Demo
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
