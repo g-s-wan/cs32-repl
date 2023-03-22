@@ -1,4 +1,4 @@
-package java.apis;
+package apis;
 
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
