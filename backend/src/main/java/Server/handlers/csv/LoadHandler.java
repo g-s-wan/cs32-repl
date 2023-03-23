@@ -25,7 +25,7 @@ import spark.Route;
 public class LoadHandler implements Route {
 
   // Handler will only be allowed to access files in this directly
-  private String allowedPath = "./data";
+  private String allowedPath = "../data";
 
   // Keeps track of the loaded CSV file
   private State state;

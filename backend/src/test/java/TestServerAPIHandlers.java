@@ -139,7 +139,7 @@ public class TestServerAPIHandlers {
    */
   @Test
   public void testAPILoadFileNotFound() throws IOException {
-    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=./data/woohoo.csv");
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=../data/woohoo.csv");
 
     // Get an OK response (the *connection* worked, the *API* provides an error response)
     assertEquals(200, clientConnection.getResponseCode());
@@ -148,7 +148,7 @@ public class TestServerAPIHandlers {
     // Check that the response contains critical elements
     assertTrue(response.contains("Could not find a file associated with the provided filepath. Did you make a typo?"));
     assertTrue(response.contains("error_bad_request"));
-    assertTrue(response.contains("filepath=./data/woohoo.csv"));
+    assertTrue(response.contains("filepath=../data/woohoo.csv"));
     clientConnection.disconnect();
   }
 
@@ -159,7 +159,7 @@ public class TestServerAPIHandlers {
    */
   @Test
   public void testAPILoadSuccess() throws IOException {
-    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=./data/stars/ten-star.csv");
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=../data/stars/ten-star.csv");
 
     // Get an OK response (the *connection* worked, the *API* provides an error response)
     assertEquals(200, clientConnection.getResponseCode());
@@ -168,7 +168,7 @@ public class TestServerAPIHandlers {
     // Check that the response contains critical elements
     assertTrue(response.contains("success"));
     assertTrue(response.contains("CSV has been loaded successfully."));
-    assertTrue(response.contains("filepath=./data/stars/ten-star.csv"));
+    assertTrue(response.contains("filepath=../data/stars/ten-star.csv"));
     clientConnection.disconnect();
   }
 
@@ -199,7 +199,7 @@ public class TestServerAPIHandlers {
    */
   @Test
   public void testAPISearchSuccess() throws IOException {
-    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=./data/stars/ten-star.csv");
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=../data/stars/ten-star.csv");
     assertEquals(200, clientConnection.getResponseCode());
     clientConnection = tryRequest("searchcsv?searchterm=Barnard&hasheaders=y&col=ProperName");
     assertEquals(200, clientConnection.getResponseCode());
@@ -224,7 +224,7 @@ public class TestServerAPIHandlers {
    */
   @Test
   public void testAPISearchMissingParam() throws IOException {
-    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=./data/stars/ten-star.csv");
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=../data/stars/ten-star.csv");
 
     // Get an OK response (the *connection* worked, the *API* provides an error response)
     assertEquals(200, clientConnection.getResponseCode());
@@ -253,7 +253,7 @@ public class TestServerAPIHandlers {
    */
   @Test
   public void testAPISearchInvalidHeader() throws IOException {
-    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=./data/stars/ten-star.csv");
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=../data/stars/ten-star.csv");
 
     // Get an OK response (the *connection* worked, the *API* provides an error response)
     assertEquals(200, clientConnection.getResponseCode());
@@ -278,7 +278,7 @@ public class TestServerAPIHandlers {
    */
   @Test
   public void testAPIViewSuccess() throws IOException {
-    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=./data/stars/ten-star.csv");
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=../data/stars/ten-star.csv");
     assertEquals(200, clientConnection.getResponseCode());
     clientConnection = tryRequest("viewcsv");
 
@@ -298,7 +298,7 @@ public class TestServerAPIHandlers {
    */
   @Test
   public void testAPISearchMalformedCSV() throws IOException {
-    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=./data/stars/ten-star-malformed.csv");
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=../data/stars/ten-star-malformed.csv");
     assertEquals(200, clientConnection.getResponseCode());
     clientConnection = tryRequest("searchcsv?searchterm=Star&hasheaders=y&col=0");
 
@@ -310,7 +310,7 @@ public class TestServerAPIHandlers {
     assertTrue(response.contains("error_bad_json"));
     assertTrue(response.contains("searchterm=Star"));
     assertTrue(response.contains("hasheaders=y"));
-    assertTrue(response.contains("filepath=./data/stars/ten-star-malformed.csv"));
+    assertTrue(response.contains("filepath=../data/stars/ten-star-malformed.csv"));
     clientConnection.disconnect();
   }
 
@@ -342,7 +342,7 @@ public class TestServerAPIHandlers {
    */
   @Test
   public void testAPILoadSearchLoadView() throws IOException {
-    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=./data/stars/ten-star-no-headers.csv");
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=../data/stars/ten-star-no-headers.csv");
     assertEquals(200, clientConnection.getResponseCode());
     clientConnection = tryRequest("searchcsv?searchterm=Proxima&hasheaders=n");
     assertEquals(200, clientConnection.getResponseCode());
@@ -355,7 +355,7 @@ public class TestServerAPIHandlers {
     assertTrue(search_response.contains("column=null"));
 
     // Load a different CSV
-    clientConnection = tryRequest("loadcsv?filepath=./data/stars/ten-star-one-col.csv");
+    clientConnection = tryRequest("loadcsv?filepath=../data/stars/ten-star-one-col.csv");
     assertEquals(200, clientConnection.getResponseCode());
     clientConnection = tryRequest("viewcsv");
     assertEquals(200, clientConnection.getResponseCode());
@@ -373,7 +373,7 @@ public class TestServerAPIHandlers {
    */
   @Test
   public void testAPILoadSearchLoadInvalidSearch() throws IOException {
-    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=./data/stars/ten-star-no-headers.csv");
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=../data/stars/ten-star-no-headers.csv");
     assertEquals(200, clientConnection.getResponseCode());
     clientConnection = tryRequest("searchcsv?searchterm=Proxima&hasheaders=n");
     assertEquals(200, clientConnection.getResponseCode());
@@ -386,7 +386,7 @@ public class TestServerAPIHandlers {
     assertTrue(search_response.contains("column=null"));
 
     // Load an invalid CSV
-    clientConnection = tryRequest("loadcsv?filepath=./data/stars/sglidjflihj");
+    clientConnection = tryRequest("loadcsv?filepath=../data/stars/sglidjflihj");
     assertEquals(200, clientConnection.getResponseCode());
     String response = getResponse(clientConnection);
     assertTrue(response.contains("Could not find a file associated with the provided filepath. Did you make a typo?"));
