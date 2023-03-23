@@ -21,8 +21,8 @@ public class TestJson {
     try {
         JsonFromFile json = new JsonFromFile("geodata.json");
 
-        assertTrue(json.containsField("type"));
-        assertTrue(json.containsField("features"));        
+        assertTrue(json.containsTopLevelField("type"));
+        assertTrue(json.containsTopLevelField("features"));        
 
     } catch (Exception e) {
         System.out.println(e.getMessage());
